@@ -46,8 +46,8 @@ async function run() {
   // ── USERS ────────────────────────────────────────────────────────────────────
 
   await findOrCreate(payload, 'users', { email: { equals: 'admin@example.com' } }, {
-    email: 'admin@example.com',
-    password: 'admin123',
+    email: 'demo@payloadcms.com',
+    password: 'test',
     roles: ['super-admin'],
   })
   console.log('✓ User: admin@example.com (password: admin123)')
