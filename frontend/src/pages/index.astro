@@ -1,0 +1,78 @@
+---
+import { getPageBySlug, getSiteSettings } from '../lib/payload'
+import type { Tenant } from '../lib/payload'
+
+const tenant = Astro.locals.tenant as Tenant | null
+
+if (!tenant) {
+  return new Response('Tenant not found', { status: 404 })
+}
+
+const [page, settings] = await Promise.all([
+  getPageBySlug(tenant.id, 'home'),
+  getSiteSettings(tenant.id),
+])
+
+const primaryColor = settings?.primaryColor ?? '#3b82f6'
+const logoText = settings?.logoText || tenant.name
+const navLinks = settings?.navLinks ?? []
+---
+
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{tenant.name}</title>
+  <style define:vars={{ primaryColor }}>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; }
+    header {
+      background: var(--primaryColor);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    nav a { color: white; text-decoration: none; margin-left: 1.5rem; }
+    nav a:hover { text-decoration: underline; }
+    main { max-width: 900px; margin: 3rem auto; padding: 0 1.5rem; }
+    h1 { font-size: 2rem; margin-bottom: 1rem; }
+    .content { color: #444; line-height: 1.7; white-space: pre-wrap; }
+    .cta {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--primaryColor);
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">{logoText}</div>
+    <nav>
+      {navLinks.map((link) => (
+        <a href={link.url}>{link.label}</a>
+      ))}
+    </nav>
+  </header>
+
+  <main>
+    {page ? (
+      <>
+        <h1>{page.title}</h1>
+        {page.content && <p class="content">{page.content}</p>}
+      </>
+    ) : (
+      <h1>Chào mừng đến {tenant.name}</h1>
+    )}
+    <a href="/tickets" class="cta">Xem vé →</a>
+  </main>
+</body>
+</html>

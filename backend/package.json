@@ -1,0 +1,32 @@
+{
+  "name": "multi-tenant-backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start --port 3000",
+    "seed": "node --import tsx ./scripts/seed.ts"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "3.78.0",
+    "@payloadcms/next": "3.78.0",
+    "@payloadcms/richtext-lexical": "3.78.0",
+    "graphql": "^16.9.0",
+    "next": "15.2.9",
+    "payload": "3.78.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sharp": "^0.32.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  }
+}
