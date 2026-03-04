@@ -43,11 +43,36 @@ PAYLOAD_PUBLIC_SERVER_URL=http://localhost:3000
 ```bash
 cd backend
 npm install
-npm run dev        # http://localhost:3000
 npm run seed       # Seed dữ liệu mẫu
+npm run dev        # http://localhost:3000
 ```
 
 Admin panel: `http://localhost:3000/admin`
+
+### Dữ liệu mẫu sau khi seed
+
+#### Tài khoản đăng nhập
+
+| Email | Mật khẩu | Vai trò |
+|---|---|---|
+| `admin@example.com` | `admin123` | Super Admin (toàn quyền) |
+| `funpark@example.com` | `test123` | Admin tenant VinWonders |
+| `busline@example.com` | `test123` | Admin tenant Phương Trang |
+
+#### Tenants
+
+| Tenant | Slug | Domain |
+|---|---|---|
+| VinWonders | `funpark` | `vinwonders.local` |
+| Phương Trang | `busline` | `phuongtrang.local` |
+
+#### Dữ liệu được tạo
+
+| | VinWonders | Phương Trang |
+|---|---|---|
+| Pages | 4 trang (home, about, tickets, contact) | 5 trang (home, about, schedule, policy, contact) |
+| Tickets | 25 loại vé | 20 tuyến xe |
+| Orders | 3 đơn mẫu | 3 đơn mẫu |
 
 ---
 

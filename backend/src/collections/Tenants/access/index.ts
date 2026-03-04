@@ -1,7 +1,6 @@
 import type { Access } from "payload";
 
 const getUserTenantIds = (user: any): string[] => {
-  console.log("user (isTenantMember):::", JSON.stringify(user, null, 2));
   if (!user?.tenants?.length) return [];
   return user.tenants
     .map((t: any) => (typeof t.tenant === "string" ? t.tenant : t.tenant?.id))
@@ -23,6 +22,7 @@ export const isTenantMember: Access = ({ req }) => {
 
 // Dùng cho create
 export const filterByUserTenants = ({ user }: { user: any }) => {
+  if (!user) return true;
   if (user?.roles?.includes("super-admin")) return true;
 
   const tenantIds = getUserTenantIds(user);

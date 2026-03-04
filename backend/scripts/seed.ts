@@ -16,9 +16,9 @@ async function findOrCreate<T extends { id: string }>(
   where: Record<string, any>,
   data: Record<string, any>,
 ): Promise<T> {
-  const result = await payload.find({ collection, where, limit: 1 })
+  const result = await payload.find({ collection, where, limit: 1, overrideAccess: true })
   if (result.docs?.[0]) return result.docs[0] as T
-  return payload.create({ collection, data }) as Promise<T>
+  return payload.create({ collection, data, overrideAccess: true }) as Promise<T>
 }
 
 async function upsertByWhere(
@@ -28,7 +28,7 @@ async function upsertByWhere(
   createData: Record<string, any>,
   updateData: Record<string, any> = createData,
 ) {
-  const existing = await payload.find({ collection, where, limit: 1 })
+  const existing = await payload.find({ collection, where, limit: 1, overrideAccess: true })
   const doc = existing.docs?.[0]
 
   if (doc) {
@@ -36,12 +36,14 @@ async function upsertByWhere(
       collection,
       id: doc.id,
       data: updateData,
+      overrideAccess: true,
     })
   }
 
   return payload.create({
     collection,
     data: createData,
+    overrideAccess: true,
   })
 }
 
@@ -411,16 +413,19 @@ async function run() {
     collection: 'tickets',
     where: { and: [{ name: { equals: 'Vé người lớn' } }, { tenant: { equals: funpark.id } }] },
     limit: 1,
+    overrideAccess: true,
   })
   const ticketVIP = await payload.find({
     collection: 'tickets',
     where: { and: [{ name: { equals: 'Vé VIP người lớn' } }, { tenant: { equals: funpark.id } }] },
     limit: 1,
+    overrideAccess: true,
   })
   const ticketFamily = await payload.find({
     collection: 'tickets',
     where: { and: [{ name: { equals: 'Vé gia đình (2+2)' } }, { tenant: { equals: funpark.id } }] },
     limit: 1,
+    overrideAccess: true,
   })
 
   const funparkOrders = [
@@ -474,16 +479,19 @@ async function run() {
     collection: 'tickets',
     where: { and: [{ name: { equals: 'TP. HCM → Đà Lạt' } }, { tenant: { equals: busline.id } }] },
     limit: 1,
+    overrideAccess: true,
   })
   const ticketSGNT = await payload.find({
     collection: 'tickets',
     where: { and: [{ name: { equals: 'TP. HCM → Nha Trang' } }, { tenant: { equals: busline.id } }] },
     limit: 1,
+    overrideAccess: true,
   })
   const ticketSGVT = await payload.find({
     collection: 'tickets',
     where: { and: [{ name: { equals: 'TP. HCM → Vũng Tàu' } }, { tenant: { equals: busline.id } }] },
     limit: 1,
+    overrideAccess: true,
   })
 
   const buslineOrders = [
