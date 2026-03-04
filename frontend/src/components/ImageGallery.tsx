@@ -9,6 +9,11 @@ export default function ImageGallery({ images }: Props) {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
+    console.log(
+      `🦀[ImageGallery] hydrated (client:idle) @ ${Date.now() % 1000}ms`,
+    );
+  }, []);
+  useEffect(() => {
     if (images.length <= 1) return;
     const timer = setInterval(() => {
       setCurrent((i) => (i + 1) % images.length);
@@ -22,11 +27,25 @@ export default function ImageGallery({ images }: Props) {
   const next = () => setCurrent((i) => (i + 1) % images.length);
 
   return (
-    <div style={{ position: "relative", width: "100%", overflow: "hidden", borderRadius: 12, background: "#000" }}>
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        overflow: "hidden",
+        borderRadius: 12,
+        background: "#000",
+      }}
+    >
       <img
         src={images[current].url}
         alt={images[current].alt ?? ""}
-        style={{ width: "100%", height: 420, objectFit: "cover", display: "block", transition: "opacity 0.4s" }}
+        style={{
+          width: "100%",
+          height: 420,
+          objectFit: "cover",
+          display: "block",
+          transition: "opacity 0.4s",
+        }}
       />
 
       {images.length > 1 && (
@@ -46,7 +65,16 @@ export default function ImageGallery({ images }: Props) {
             ›
           </button>
 
-          <div style={{ position: "absolute", bottom: 14, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 6 }}>
+          <div
+            style={{
+              position: "absolute",
+              bottom: 14,
+              left: "50%",
+              transform: "translateX(-50%)",
+              display: "flex",
+              gap: 6,
+            }}
+          >
             {images.map((_, i) => (
               <button
                 key={i}

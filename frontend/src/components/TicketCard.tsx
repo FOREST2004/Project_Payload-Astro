@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import s from "./TicketCard.module.css";
 
 type Ticket = {
@@ -32,6 +32,11 @@ function formatPrice(price: number) {
 }
 
 export default function TicketCard({ ticket, tenantId, primaryColor }: Props) {
+  useEffect(() => {
+    console.log(
+      `🦀[TicketCard] hydrated (client:visible) - ${ticket.name} @ ${Date.now() % 1000}ms`,
+    );
+  }, []);
   const [step, setStep] = useState<Step>("idle");
   const [qty, setQty] = useState(1);
   const [form, setForm] = useState({
@@ -84,7 +89,6 @@ export default function TicketCard({ ticket, tenantId, primaryColor }: Props) {
 
   return (
     <>
-
       <article className={s.card} style={cssVars}>
         <div className={s.name}>{ticket.name}</div>
         {ticket.description && (

@@ -5,12 +5,19 @@ type Props = {
   heroBgTo: string;
 };
 
+import { useEffect } from "react";
+
 export default function HeroSection({
   title,
   content,
   heroBgFrom,
   heroBgTo,
 }: Props) {
+  useEffect(() => {
+    console.log(
+      `🦀[HeroSection] hydrated (client:load) @ ${Date.now() % 1000}ms`,
+    );
+  }, []);
   return (
     <section
       style={{

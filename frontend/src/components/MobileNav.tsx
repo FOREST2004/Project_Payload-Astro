@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type NavLink = { label: string; url: string };
 
@@ -9,6 +9,11 @@ type Props = {
 };
 
 export default function MobileNav({ links, primaryColor, logoText }: Props) {
+  useEffect(() => {
+    console.log(
+      `🦀[MobileNav] hydrated (client:media ≤640px) @ ${Date.now() % 1000}ms`,
+    );
+  }, []);
   const [open, setOpen] = useState(false);
 
   return (

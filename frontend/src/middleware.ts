@@ -6,8 +6,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const url = new URL(request.url);
   const hostname = url.hostname;
 
-  console.log("hostname::::::", hostname);
-
   let tenant = null;
 
   if (hostname !== "localhost" && hostname !== "127.0.0.1") {
