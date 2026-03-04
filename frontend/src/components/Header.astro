@@ -1,0 +1,74 @@
+---
+import type { Tenant, SiteSettings } from '../lib/payload'
+
+interface Props {
+  tenant: Tenant
+  settings: SiteSettings | null
+}
+
+const { tenant, settings } = Astro.props
+const header = settings?.header
+const topBar = header?.topBar
+const logoText = header?.logoText || tenant.name
+const navLinks = header?.navLinks ?? []
+
+const primaryColor = settings?.theme?.primaryColor ?? '#3b82f6'
+const darkColor = settings?.theme?.darkColor ?? '#1e3a5f'
+---
+
+<style define:vars={{ primaryColor, darkColor }}>
+  .top-bar {
+    background: var(--darkColor);
+    color: rgba(255,255,255,0.85);
+    font-size: 0.8rem;
+    padding: 0.35rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .site-header {
+    background: var(--primaryColor);
+    color: white;
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: white;
+    letter-spacing: -0.02em;
+  }
+  nav { display: flex; align-items: center; gap: 0.25rem; }
+  nav a {
+    color: rgba(255,255,255,0.9);
+    text-decoration: none;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: background 0.15s;
+  }
+  nav a:hover { background: rgba(255,255,255,0.15); color: white; }
+</style>
+
+{topBar?.enabled && (
+  <div class="top-bar">
+    <span>{topBar.leftText ?? ''}</span>
+    <span>{topBar.rightText ?? ''}</span>
+  </div>
+)}
+
+<header class="site-header">
+  <a href="/" class="logo" transition:name="logo">{logoText}</a>
+  <nav>
+    {navLinks.map((link) => (
+      <a href={link.url}>{link.label}</a>
+    ))}
+  </nav>
+</header>

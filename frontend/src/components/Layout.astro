@@ -1,0 +1,82 @@
+---
+import { ViewTransitions } from 'astro:transitions'
+import type { Tenant, SiteSettings, Theme } from '../lib/payload'
+import { FONT_MAP } from '../lib/payload'
+import Header from './Header.astro'
+import Footer from './Footer.astro'
+
+interface Props {
+  tenant: Tenant
+  settings: SiteSettings | null
+  title?: string
+}
+
+const { tenant, settings, title } = Astro.props
+
+const theme: Theme = settings?.theme ?? {
+  primaryColor: '#3b82f6',
+  darkColor: '#1e3a5f',
+  heroBgFrom: '#1e3a5f',
+  heroBgTo: '#3b82f6',
+  fontFamily: 'segoe',
+}
+
+const fontFamily = FONT_MAP[theme.fontFamily] ?? FONT_MAP.segoe
+---
+
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title ?? tenant.name}</title>
+  <ViewTransitions />
+  <style define:vars={{
+    primaryColor: theme.primaryColor,
+    darkColor: theme.darkColor,
+    heroBgFrom: theme.heroBgFrom,
+    heroBgTo: theme.heroBgTo,
+    fontFamily,
+  }}>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--fontFamily);
+      color: #1a1a1a;
+      background: #f8f9fa;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    main { flex: 1; }
+
+    /* Utility */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+    .btn-primary {
+      display: inline-block;
+      padding: 0.75rem 1.75rem;
+      background: var(--primaryColor);
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+  </style>
+</head>
+<body>
+  {settings?.header?.enabled !== false && (
+    <Header tenant={tenant} settings={settings} />
+  )}
+
+  <main transition:animate="fade">
+    <slot />
+  </main>
+
+  {settings?.footer?.enabled !== false && (
+    <Footer tenant={tenant} settings={settings} />
+  )}
+</body>
+</html>

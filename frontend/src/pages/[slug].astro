@@ -1,0 +1,78 @@
+---
+import { getPageBySlug, getSiteSettings } from '../lib/payload'
+import type { Tenant } from '../lib/payload'
+import Layout from '../components/Layout.astro'
+
+const tenant = Astro.locals.tenant as Tenant | null
+
+if (!tenant) {
+  return new Response('Tenant not found', { status: 404 })
+}
+
+const { slug } = Astro.params
+
+const [page, settings] = await Promise.all([
+  getPageBySlug(tenant.id, slug!),
+  getSiteSettings(tenant.id),
+])
+
+if (!page) {
+  return new Response('Page not found', { status: 404 })
+}
+
+const primaryColor = settings?.theme?.primaryColor ?? '#3b82f6'
+const heroBgFrom = settings?.theme?.heroBgFrom ?? '#1e3a5f'
+const heroBgTo = settings?.theme?.heroBgTo ?? '#3b82f6'
+---
+
+<Layout tenant={tenant} settings={settings} title={`${page.title} – ${tenant.name}`}>
+  <!-- Page header -->
+  <section class="page-hero" style={`background: linear-gradient(135deg, ${heroBgFrom} 0%, ${heroBgTo} 100%)`}>
+    <div class="container">
+      <h1 class="page-title" transition:name="hero-title">{page.title}</h1>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="content-section container">
+    {page.content ? (
+      <div class="page-content">{page.content}</div>
+    ) : (
+      <p class="no-content">Trang này chưa có nội dung.</p>
+    )}
+
+    <a href="/" class="back-link" style={`color: ${primaryColor}`}>← Về trang chủ</a>
+  </section>
+</Layout>
+
+<style>
+  .page-hero {
+    padding: 3rem 1.5rem 2.5rem;
+    color: white;
+    text-align: center;
+  }
+  .page-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .content-section { padding: 3rem 1.5rem; max-width: 800px; }
+  .page-content {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #333;
+    white-space: pre-line;
+    margin-bottom: 2.5rem;
+  }
+  .no-content { color: #aaa; font-style: italic; margin-bottom: 2rem; }
+  .back-link {
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .back-link:hover { text-decoration: underline; }
+</style>

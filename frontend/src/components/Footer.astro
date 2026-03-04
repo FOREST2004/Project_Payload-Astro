@@ -1,0 +1,78 @@
+---
+import type { Tenant, SiteSettings, FooterColumn } from '../lib/payload'
+import { resolveTenantPath } from '../lib/payload'
+
+interface Props {
+  tenant: Tenant
+  settings: SiteSettings | null
+}
+
+const { tenant, settings } = Astro.props
+const footer = settings?.footer
+const columns: FooterColumn[] = footer?.columns ?? []
+const copyrightText = footer?.copyrightText ?? `© ${new Date().getFullYear()} ${tenant.name}`
+
+const darkColor = settings?.theme?.darkColor ?? '#1e3a5f'
+const primaryColor = settings?.theme?.primaryColor ?? '#3b82f6'
+
+function resolveColumn(col: FooterColumn): string {
+  if (col.contentSource === 'tenant' && col.tenantFieldPath) {
+    return resolveTenantPath(tenant, col.tenantFieldPath)
+  }
+  return col.content ?? ''
+}
+---
+
+<style define:vars={{ darkColor, primaryColor }}>
+  footer {
+    background: var(--darkColor);
+    color: rgba(255,255,255,0.8);
+    padding: 3rem 1.5rem 1.5rem;
+    margin-top: auto;
+  }
+  .footer-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .col-title {
+    color: white;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .col-content {
+    font-size: 0.875rem;
+    line-height: 1.7;
+    white-space: pre-line;
+    color: rgba(255,255,255,0.7);
+  }
+  .footer-bottom {
+    max-width: 1100px;
+    margin: 0 auto;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 1.25rem;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+  }
+</style>
+
+<footer>
+  {columns.length > 0 && (
+    <div class="footer-grid">
+      {columns.map((col) => (
+        <div>
+          {col.title && <div class="col-title">{col.title}</div>}
+          <div class="col-content">{resolveColumn(col)}</div>
+        </div>
+      ))}
+    </div>
+  )}
+  <div class="footer-bottom">{copyrightText}</div>
+</footer>
