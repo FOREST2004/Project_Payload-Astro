@@ -152,33 +152,85 @@ async function run() {
   // PAGES
   // ────────────────────────────────────────────────────────────────────────────
 
-  await upsertByWhere(
-    payload,
-    'pages',
-    { and: [{ slug: { equals: 'home' } }, { tenant: { equals: funpark.id } }] },
+  const funparkPages = [
     {
-      title: 'Chào mừng đến VinWonders',
       slug: 'home',
+      title: 'Chào mừng đến VinWonders',
       content:
         'VinWonders – Thiên đường vui chơi giải trí hàng đầu Việt Nam.\nTrải nghiệm hàng trăm trò chơi, show diễn và khu vực tham quan độc đáo.',
-      tenant: funpark.id,
     },
-  )
-  console.log('✓ Page: VinWonders home')
-
-  await upsertByWhere(
-    payload,
-    'pages',
-    { and: [{ slug: { equals: 'home' } }, { tenant: { equals: busline.id } }] },
     {
-      title: 'Phương Trang – Xe khách chất lượng cao',
+      slug: 'about',
+      title: 'Về chúng tôi',
+      content:
+        'VinWonders là hệ thống công viên giải trí đẳng cấp quốc tế do Vingroup phát triển.\nHiện có mặt tại Nha Trang, Phú Quốc, Hạ Long và Nam Hội An.\nMỗi khu đều mang đặc trưng văn hóa địa phương kết hợp với công nghệ giải trí hiện đại.',
+    },
+    {
+      slug: 'tickets',
+      title: 'Mua vé',
+      content:
+        'Đặt vé trực tuyến để nhận ưu đãi lên đến 20%.\nVé có hiệu lực trong ngày, không hoàn tiền sau khi sử dụng.\nTrẻ em dưới 100cm miễn phí vào cửa.',
+    },
+    {
+      slug: 'contact',
+      title: 'Liên hệ',
+      content:
+        'Hotline: 0901 111 222 (7:00 – 22:00 hàng ngày)\nEmail: hello@vinwonders.local\nĐịa chỉ: VinWonders, Nha Trang, Khánh Hòa\nFanpage: facebook.com/vinwonders',
+    },
+  ]
+
+  for (const page of funparkPages) {
+    await upsertByWhere(
+      payload,
+      'pages',
+      { and: [{ slug: { equals: page.slug } }, { tenant: { equals: funpark.id } }] },
+      { ...page, tenant: funpark.id },
+    )
+  }
+  console.log(`✓ Pages VinWonders: ${funparkPages.length} trang`)
+
+  const buslinePages = [
+    {
       slug: 'home',
+      title: 'Phương Trang – Xe khách chất lượng cao',
       content:
         'Hơn 20 năm phục vụ hành khách trên toàn quốc.\nĐặt vé dễ dàng, chất lượng dịch vụ hàng đầu.',
-      tenant: busline.id,
     },
-  )
-  console.log('✓ Page: Phương Trang home')
+    {
+      slug: 'about',
+      title: 'Giới thiệu Phương Trang',
+      content:
+        'Công ty TNHH Xe khách Phương Trang (FUTA Bus Lines) thành lập năm 2001.\nMạng lưới hơn 60 tuyến cố định trên toàn quốc.\nĐội xe hiện đại với hơn 2.000 xe, phục vụ hàng triệu lượt khách mỗi năm.',
+    },
+    {
+      slug: 'schedule',
+      title: 'Lịch trình & Tuyến đường',
+      content:
+        'Tra cứu lịch khởi hành theo tuyến và giờ chạy.\nCác tuyến phổ biến: TP.HCM – Đà Lạt, TP.HCM – Nha Trang, Hà Nội – Đà Nẵng.\nXe khởi hành đúng giờ, có GPS theo dõi hành trình.',
+    },
+    {
+      slug: 'policy',
+      title: 'Chính sách & Điều khoản',
+      content:
+        'Chính sách đổi/hoàn vé: trước 24 giờ khởi hành được hoàn 70% giá vé.\nHành lý: tối đa 20kg hành lý ký gửi, 7kg hành lý xách tay.\nKhách đến bến xe trước giờ khởi hành tối thiểu 15 phút.',
+    },
+    {
+      slug: 'contact',
+      title: 'Liên hệ',
+      content:
+        'Tổng đài: 1900 6067 (6:00 – 22:00 hàng ngày)\nEmail: support@phuongtrang.local\nVăn phòng chính: Bến xe Miền Tây, TP. Hồ Chí Minh',
+    },
+  ]
+
+  for (const page of buslinePages) {
+    await upsertByWhere(
+      payload,
+      'pages',
+      { and: [{ slug: { equals: page.slug } }, { tenant: { equals: busline.id } }] },
+      { ...page, tenant: busline.id },
+    )
+  }
+  console.log(`✓ Pages Phương Trang: ${buslinePages.length} trang`)
 
   // ────────────────────────────────────────────────────────────────────────────
   // SITE SETTINGS  (schema mới: header/theme/footer đều là group)
@@ -350,6 +402,150 @@ async function run() {
     )
   }
   console.log(`✓ Tickets Phương Trang: ${buslineTickets.length} vé`)
+
+  // ────────────────────────────────────────────────────────────────────────────
+  // ORDERS – VinWonders
+  // ────────────────────────────────────────────────────────────────────────────
+
+  const ticketAdult = await payload.find({
+    collection: 'tickets',
+    where: { and: [{ name: { equals: 'Vé người lớn' } }, { tenant: { equals: funpark.id } }] },
+    limit: 1,
+  })
+  const ticketVIP = await payload.find({
+    collection: 'tickets',
+    where: { and: [{ name: { equals: 'Vé VIP người lớn' } }, { tenant: { equals: funpark.id } }] },
+    limit: 1,
+  })
+  const ticketFamily = await payload.find({
+    collection: 'tickets',
+    where: { and: [{ name: { equals: 'Vé gia đình (2+2)' } }, { tenant: { equals: funpark.id } }] },
+    limit: 1,
+  })
+
+  const funparkOrders = [
+    {
+      orderCode: 'FP-2024-0001',
+      tenant: funpark.id,
+      ticket: ticketAdult.docs?.[0]?.id,
+      buyerName: 'Nguyễn Văn An',
+      buyerEmail: 'an.nguyen@gmail.com',
+      buyerPhone: '0912345678',
+      quantity: 2,
+      totalAmount: 400000,
+      status: 'completed',
+      paymentMethod: 'vnpay',
+      paymentStatus: 'paid',
+    },
+    {
+      orderCode: 'FP-2024-0002',
+      tenant: funpark.id,
+      ticket: ticketVIP.docs?.[0]?.id,
+      buyerName: 'Trần Thị Bình',
+      buyerEmail: 'binh.tran@gmail.com',
+      buyerPhone: '0987654321',
+      quantity: 1,
+      totalAmount: 450000,
+      status: 'confirmed',
+      paymentMethod: 'momo',
+      paymentStatus: 'paid',
+    },
+    {
+      orderCode: 'FP-2024-0003',
+      tenant: funpark.id,
+      ticket: ticketFamily.docs?.[0]?.id,
+      buyerName: 'Lê Minh Cường',
+      buyerEmail: 'cuong.le@gmail.com',
+      buyerPhone: '0901234567',
+      quantity: 1,
+      totalAmount: 500000,
+      status: 'pending',
+      paymentMethod: 'bank-transfer',
+      paymentStatus: 'unpaid',
+    },
+  ]
+
+  for (const order of funparkOrders) {
+    await findOrCreate(
+      payload,
+      'orders',
+      { orderCode: { equals: order.orderCode } },
+      order,
+    )
+  }
+  console.log(`✓ Orders VinWonders: ${funparkOrders.length} đơn`)
+
+  // ────────────────────────────────────────────────────────────────────────────
+  // ORDERS – Phương Trang
+  // ────────────────────────────────────────────────────────────────────────────
+
+  const ticketSGDL = await payload.find({
+    collection: 'tickets',
+    where: { and: [{ name: { equals: 'TP. HCM → Đà Lạt' } }, { tenant: { equals: busline.id } }] },
+    limit: 1,
+  })
+  const ticketSGNT = await payload.find({
+    collection: 'tickets',
+    where: { and: [{ name: { equals: 'TP. HCM → Nha Trang' } }, { tenant: { equals: busline.id } }] },
+    limit: 1,
+  })
+  const ticketSGVT = await payload.find({
+    collection: 'tickets',
+    where: { and: [{ name: { equals: 'TP. HCM → Vũng Tàu' } }, { tenant: { equals: busline.id } }] },
+    limit: 1,
+  })
+
+  const buslineOrders = [
+    {
+      orderCode: 'BL-2024-0001',
+      tenant: busline.id,
+      ticket: ticketSGDL.docs?.[0]?.id,
+      buyerName: 'Phạm Thị Dung',
+      buyerEmail: 'dung.pham@gmail.com',
+      buyerPhone: '0933445566',
+      quantity: 2,
+      totalAmount: 400000,
+      status: 'completed',
+      paymentMethod: 'zalopay',
+      paymentStatus: 'paid',
+    },
+    {
+      orderCode: 'BL-2024-0002',
+      tenant: busline.id,
+      ticket: ticketSGNT.docs?.[0]?.id,
+      buyerName: 'Hoàng Văn Em',
+      buyerEmail: 'em.hoang@gmail.com',
+      buyerPhone: '0944556677',
+      quantity: 1,
+      totalAmount: 280000,
+      status: 'confirmed',
+      paymentMethod: 'vnpay',
+      paymentStatus: 'paid',
+    },
+    {
+      orderCode: 'BL-2024-0003',
+      tenant: busline.id,
+      ticket: ticketSGVT.docs?.[0]?.id,
+      buyerName: 'Vũ Thị Phương',
+      buyerEmail: 'phuong.vu@gmail.com',
+      buyerPhone: '0955667788',
+      quantity: 3,
+      totalAmount: 360000,
+      status: 'pending',
+      paymentMethod: 'momo',
+      paymentStatus: 'unpaid',
+    },
+  ]
+
+  for (const order of buslineOrders) {
+    await findOrCreate(
+      payload,
+      'orders',
+      { orderCode: { equals: order.orderCode } },
+      order,
+    )
+  }
+  console.log(`✓ Orders Phương Trang: ${buslineOrders.length} đơn`)
 
   console.log('\n✅ Seed hoàn tất!')
   process.exit(0)

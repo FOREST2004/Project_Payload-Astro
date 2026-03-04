@@ -8,6 +8,7 @@ import { Pages } from './collections/Pages/Pages'
 import { Tickets } from './collections/Tickets/Tickets'
 import { SiteSettings } from './collections/SiteSettings/SiteSettings'
 import Users from './collections/Users/Users'
+import { Orders } from './collections/Orders/Orders'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -18,11 +19,12 @@ export default buildConfig({
   },
   secret: process.env.PAYLOAD_SECRET as string,
   editor: lexicalEditor({}),
-  collections: [Tenants, Pages, Tickets, SiteSettings, Users],
+  collections: [Tenants, Pages, Tickets, SiteSettings, Users, Orders],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
+    push: true,
     pool: {
       connectionString: process.env.DATABASE_URI as string,
     },

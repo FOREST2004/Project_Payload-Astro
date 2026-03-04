@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 // import { isSuperAdmin } from '../../access/isSupperAdmin'
-import { isTenantMember, filterByUserTenants } from '../Pages/access'
+import { isTenantMember, filterByUserTenants } from '../Tenants/access'
 
 const Users: CollectionConfig = {
   slug: 'users',

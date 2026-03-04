@@ -173,26 +173,46 @@ export const SiteSettings: CollectionConfig = {
           type: "text",
           label: "Màu chính (hex, vd: #e84118)",
           defaultValue: "#e84118",
-          admin: { description: "Dùng cho header, nút bấm, giá vé" },
+          admin: {
+            description: "Dùng cho header, nút bấm, giá vé",
+            components: {
+              Field: '@/components/colorPicker/ColorPickerField#ColorPickerField',
+            },
+          },
         },
         {
           name: "darkColor",
           type: "text",
           label: "Màu nền tối (hex, vd: #1a1a2e)",
           defaultValue: "#1a1a2e",
-          admin: { description: "Dùng cho footer, header trang vé" },
+          admin: {
+            description: "Dùng cho footer, header trang vé",
+            components: {
+              Field: '@/components/colorPicker/ColorPickerField#ColorPickerField',
+            },
+          },
         },
         {
           name: "heroBgFrom",
           type: "text",
           label: "Hero gradient — màu bắt đầu (hex)",
           defaultValue: "#e84118",
+          admin: {
+            components: {
+              Field: '@/components/colorPicker/ColorPickerField#ColorPickerField',
+            },
+          },
         },
         {
           name: "heroBgTo",
           type: "text",
           label: "Hero gradient — màu kết thúc (hex)",
           defaultValue: "#ffb347",
+          admin: {
+            components: {
+              Field: '@/components/colorPicker/ColorPickerField#ColorPickerField',
+            },
+          },
         },
         {
           name: "fontFamily",

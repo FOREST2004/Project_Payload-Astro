@@ -5,7 +5,7 @@ const getUserTenantIds = (user: any): string[] => {
   if (!user?.tenants?.length) return []
   return user.tenants
     .map((t: any) => (typeof t.tenant === 'string' ? t.tenant : t.tenant?.id))
-    .filter(item => Boolean(item)) //filter lọc ra các giá trị falsy, lọc bỏ các giá trị falsy, chỉ lấy các giá trị truthy
+    .filter(Boolean) //filter lọc ra các giá trị falsy, lọc bỏ các giá trị falsy, chỉ lấy các giá trị truthy
 }
 
 // Dùng cho read / update / delete
