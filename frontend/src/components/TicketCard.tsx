@@ -84,7 +84,7 @@ export default function TicketCard({ ticket, tenantId, primaryColor }: Props) {
 
   return (
     <>
-      {/* Card */}
+
       <article className={s.card} style={cssVars}>
         <div className={s.name}>{ticket.name}</div>
         {ticket.description && (
@@ -102,7 +102,6 @@ export default function TicketCard({ ticket, tenantId, primaryColor }: Props) {
         </div>
       </article>
 
-      {/* Modal */}
       {step !== "idle" && (
         <div
           className={s.overlay}

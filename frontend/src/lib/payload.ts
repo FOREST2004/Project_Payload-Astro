@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.PAYLOAD_API_URL || "http://localhost:3000";
+const API_URL = import.meta.env.PAYLOAD_API_URL;
 
 export type Tenant = {
   id: string;

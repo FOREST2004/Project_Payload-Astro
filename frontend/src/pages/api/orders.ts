@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 
-const API_URL = import.meta.env.PAYLOAD_API_URL || "http://localhost:3000";
+const API_URL = import.meta.env.PAYLOAD_API_URL;
 
 function generateOrderCode(): string {
   const now = new Date();
@@ -23,7 +23,6 @@ export const POST: APIRoute = async ({ request }) => {
       paymentMethod,
     } = body;
 
-    // Validate
     if (
       !ticketId ||
       !tenantId ||
