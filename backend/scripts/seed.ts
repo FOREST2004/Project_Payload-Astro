@@ -5,6 +5,7 @@ import { loadEnvConfig } from '@next/env'
 const require = createRequire(import.meta.url)
 const nextEnv = require('@next/env')
 
+// Next env interop (có lúc module export default khác nhau)
 if (nextEnv && !nextEnv.default) {
   nextEnv.default = nextEnv
 }
@@ -16,155 +17,264 @@ async function findOrCreate<T extends { id: string }>(
   data: Record<string, any>,
 ): Promise<T> {
   const result = await payload.find({ collection, where, limit: 1 })
-  if (result.docs[0]) return result.docs[0] as T
+  if (result.docs?.[0]) return result.docs[0] as T
   return payload.create({ collection, data }) as Promise<T>
+}
+
+async function upsertByWhere(
+  payload: any,
+  collection: string,
+  where: Record<string, any>,
+  createData: Record<string, any>,
+  updateData: Record<string, any> = createData,
+) {
+  const existing = await payload.find({ collection, where, limit: 1 })
+  const doc = existing.docs?.[0]
+
+  if (doc) {
+    return payload.update({
+      collection,
+      id: doc.id,
+      data: updateData,
+    })
+  }
+
+  return payload.create({
+    collection,
+    data: createData,
+  })
 }
 
 async function run() {
   loadEnvConfig(process.cwd())
+
   const { default: config } = await import('../src/payload.config')
   const payload = await getPayload({ config })
 
-  // ── TENANTS ─────────────────────────────────────────────────────────────────
+  // ────────────────────────────────────────────────────────────────────────────
+  // TENANTS
+  // ────────────────────────────────────────────────────────────────────────────
 
-  const funpark = await findOrCreate(payload, 'tenants', { slug: { equals: 'funpark' } }, {
-    name: 'VinWonders',
-    slug: 'funpark',
-    domain: 'vinwonders.local',
-    public: true,
-  })
+  const funpark = await upsertByWhere(
+    payload,
+    'tenants',
+    { slug: { equals: 'funpark' } },
+    {
+      name: 'VinWonders',
+      slug: 'funpark',
+      domain: 'vinwonders.local',
+      public: true,
+      contact: {
+        phone: '0901 111 222',
+        email: 'hello@vinwonders.local',
+        address: 'VinWonders, Nha Trang, Khánh Hòa',
+      },
+    },
+  )
   console.log('✓ Tenant: VinWonders')
 
-  const busline = await findOrCreate(payload, 'tenants', { slug: { equals: 'busline' } }, {
-    name: 'Phương Trang',
-    slug: 'busline',
-    domain: 'phuongtrang.local',
-    public: true,
-  })
+  const busline = await upsertByWhere(
+    payload,
+    'tenants',
+    { slug: { equals: 'busline' } },
+    {
+      name: 'Phương Trang',
+      slug: 'busline',
+      domain: 'phuongtrang.local',
+      public: true,
+      contact: {
+        phone: '1900 6067',
+        email: 'support@phuongtrang.local',
+        address: 'Bến xe Miền Tây, TP. Hồ Chí Minh',
+      },
+    },
+  )
   console.log('✓ Tenant: Phương Trang')
 
-  // ── USERS ────────────────────────────────────────────────────────────────────
+  // ────────────────────────────────────────────────────────────────────────────
+  // USERS
+  // ────────────────────────────────────────────────────────────────────────────
 
-  await findOrCreate(payload, 'users', { email: { equals: 'admin@example.com' } }, {
-    email: 'demo@payloadcms.com',
-    password: 'test',
-    roles: ['super-admin'],
-  })
+  await upsertByWhere(
+    payload,
+    'users',
+    { email: { equals: 'admin@example.com' } },
+    {
+      email: 'admin@example.com',
+      password: 'admin123',
+      roles: ['super-admin'],
+    },
+    {
+      // NOTE: password thường không update nếu đã tồn tại (tuỳ config/auth)
+      email: 'admin@example.com',
+      roles: ['super-admin'],
+    },
+  )
   console.log('✓ User: admin@example.com (password: admin123)')
 
-  await findOrCreate(payload, 'users', { email: { equals: 'funpark@example.com' } }, {
-    email: 'funpark@example.com',
-    password: 'test123',
-    roles: ['user'],
-    tenants: [{ tenant: funpark.id, roles: ['admin'] }],
-  })
-  console.log('✓ User: funpark@example.com')
+  await upsertByWhere(
+    payload,
+    'users',
+    { email: { equals: 'funpark@example.com' } },
+    {
+      email: 'funpark@example.com',
+      password: 'test123',
+      roles: ['user'],
+      tenants: [{ tenant: funpark.id, roles: ['admin'] }],
+    },
+    {
+      email: 'funpark@example.com',
+      roles: ['user'],
+      tenants: [{ tenant: funpark.id, roles: ['admin'] }],
+    },
+  )
+  console.log('✓ User: funpark@example.com (password: test123)')
 
-  await findOrCreate(payload, 'users', { email: { equals: 'busline@example.com' } }, {
-    email: 'busline@example.com',
-    password: 'test123',
-    roles: ['user'],
-    tenants: [{ tenant: busline.id, roles: ['admin'] }],
-  })
-  console.log('✓ User: busline@example.com')
+  await upsertByWhere(
+    payload,
+    'users',
+    { email: { equals: 'busline@example.com' } },
+    {
+      email: 'busline@example.com',
+      password: 'test123',
+      roles: ['user'],
+      tenants: [{ tenant: busline.id, roles: ['admin'] }],
+    },
+    {
+      email: 'busline@example.com',
+      roles: ['user'],
+      tenants: [{ tenant: busline.id, roles: ['admin'] }],
+    },
+  )
+  console.log('✓ User: busline@example.com (password: test123)')
 
-  // ── PAGES ────────────────────────────────────────────────────────────────────
+  // ────────────────────────────────────────────────────────────────────────────
+  // PAGES
+  // ────────────────────────────────────────────────────────────────────────────
 
-  await findOrCreate(
-    payload, 'pages',
+  await upsertByWhere(
+    payload,
+    'pages',
     { and: [{ slug: { equals: 'home' } }, { tenant: { equals: funpark.id } }] },
     {
       title: 'Chào mừng đến VinWonders',
       slug: 'home',
-      content: 'VinWonders – Thiên đường vui chơi giải trí hàng đầu Việt Nam.\nTrải nghiệm hàng trăm trò chơi, show diễn và khu vực tham quan độc đáo.',
+      content:
+        'VinWonders – Thiên đường vui chơi giải trí hàng đầu Việt Nam.\nTrải nghiệm hàng trăm trò chơi, show diễn và khu vực tham quan độc đáo.',
       tenant: funpark.id,
     },
   )
   console.log('✓ Page: VinWonders home')
 
-  await findOrCreate(
-    payload, 'pages',
+  await upsertByWhere(
+    payload,
+    'pages',
     { and: [{ slug: { equals: 'home' } }, { tenant: { equals: busline.id } }] },
     {
       title: 'Phương Trang – Xe khách chất lượng cao',
       slug: 'home',
-      content: 'Hơn 20 năm phục vụ hành khách trên toàn quốc.\nĐặt vé dễ dàng, chất lượng dịch vụ hàng đầu.',
+      content:
+        'Hơn 20 năm phục vụ hành khách trên toàn quốc.\nĐặt vé dễ dàng, chất lượng dịch vụ hàng đầu.',
       tenant: busline.id,
     },
   )
   console.log('✓ Page: Phương Trang home')
 
-  // ── SITE SETTINGS ────────────────────────────────────────────────────────────
+  // ────────────────────────────────────────────────────────────────────────────
+  // SITE SETTINGS  (schema mới: header/theme/footer đều là group)
+  // ────────────────────────────────────────────────────────────────────────────
 
-  const funparkSettings = await payload.find({
-    collection: 'site-settings',
-    where: { tenant: { equals: funpark.id } },
-    limit: 1,
-  })
-  if (funparkSettings.docs[0]) {
-    await payload.update({
-      collection: 'site-settings',
-      id: funparkSettings.docs[0].id,
-      data: {
+  await upsertByWhere(
+    payload,
+    'site-settings',
+    { tenant: { equals: funpark.id } },
+    {
+      tenant: funpark.id,
+      header: {
+        enabled: true,
+        topBar: {
+          enabled: true,
+          leftText: 'Ưu đãi mùa lễ hội',
+          rightText: 'Hotline: 0901 111 222',
+        },
         logoText: 'VinWonders',
-        primaryColor: '#e84118',
         navLinks: [
           { label: 'Trang chủ', url: '/' },
           { label: 'Mua vé', url: '/tickets' },
         ],
       },
-    })
-  } else {
-    await payload.create({
-      collection: 'site-settings',
-      data: {
-        tenant: funpark.id,
-        logoText: 'VinWonders',
+      theme: {
         primaryColor: '#e84118',
-        navLinks: [
-          { label: 'Trang chủ', url: '/' },
-          { label: 'Mua vé', url: '/tickets' },
+        darkColor: '#1a1a2e',
+        heroBgFrom: '#e84118',
+        heroBgTo: '#ffb347',
+        fontFamily: 'segoe',
+      },
+      footer: {
+        enabled: true,
+        copyrightText: '',
+        columns: [
+          { title: 'Hotline', contentSource: 'tenant', tenantFieldPath: 'contact.phone' },
+          { title: 'Email', contentSource: 'tenant', tenantFieldPath: 'contact.email' },
+          { title: 'Địa chỉ', contentSource: 'tenant', tenantFieldPath: 'contact.address' },
+          {
+            title: 'Giờ mở cửa',
+            contentSource: 'custom',
+            content: 'T2–T6: 9:00–18:00\nT7–CN: 9:00–21:00',
+          },
         ],
       },
-    })
-  }
+    },
+  )
   console.log('✓ SiteSettings: VinWonders')
 
-  const buslineSettings = await payload.find({
-    collection: 'site-settings',
-    where: { tenant: { equals: busline.id } },
-    limit: 1,
-  })
-  if (buslineSettings.docs[0]) {
-    await payload.update({
-      collection: 'site-settings',
-      id: buslineSettings.docs[0].id,
-      data: {
+  await upsertByWhere(
+    payload,
+    'site-settings',
+    { tenant: { equals: busline.id } },
+    {
+      tenant: busline.id,
+      header: {
+        enabled: true,
+        topBar: {
+          enabled: true,
+          leftText: 'Đặt vé nhanh - đi an toàn',
+          rightText: 'Hotline: 1900 6067',
+        },
         logoText: 'Phương Trang',
-        primaryColor: '#16a34a',
         navLinks: [
           { label: 'Trang chủ', url: '/' },
           { label: 'Lịch trình', url: '/tickets' },
         ],
       },
-    })
-  } else {
-    await payload.create({
-      collection: 'site-settings',
-      data: {
-        tenant: busline.id,
-        logoText: 'Phương Trang',
+      theme: {
         primaryColor: '#16a34a',
-        navLinks: [
-          { label: 'Trang chủ', url: '/' },
-          { label: 'Lịch trình', url: '/tickets' },
+        darkColor: '#0b1220',
+        heroBgFrom: '#16a34a',
+        heroBgTo: '#86efac',
+        fontFamily: 'inter',
+      },
+      footer: {
+        enabled: true,
+        copyrightText: '',
+        columns: [
+          { title: 'Hotline', contentSource: 'tenant', tenantFieldPath: 'contact.phone' },
+          { title: 'Email', contentSource: 'tenant', tenantFieldPath: 'contact.email' },
+          { title: 'Văn phòng', contentSource: 'tenant', tenantFieldPath: 'contact.address' },
+          {
+            title: 'Hỗ trợ',
+            contentSource: 'custom',
+            content: 'Chính sách đổi vé\nĐiều khoản\nLiên hệ',
+          },
         ],
       },
-    })
-  }
+    },
+  )
   console.log('✓ SiteSettings: Phương Trang')
 
-  // ── TICKETS – VinWonders ─────────────────────────────────────────────────────
+  // ────────────────────────────────────────────────────────────────────────────
+  // TICKETS – VinWonders
+  // ────────────────────────────────────────────────────────────────────────────
 
   const funparkTickets = [
     { name: 'Vé người lớn', description: 'Vào cửa toàn khu, từ 18 tuổi trở lên', price: 200000 },
@@ -196,14 +306,17 @@ async function run() {
 
   for (const ticket of funparkTickets) {
     await findOrCreate(
-      payload, 'tickets',
+      payload,
+      'tickets',
       { and: [{ name: { equals: ticket.name } }, { tenant: { equals: funpark.id } }] },
       { ...ticket, status: 'active', tenant: funpark.id },
     )
   }
   console.log(`✓ Tickets VinWonders: ${funparkTickets.length} vé`)
 
-  // ── TICKETS – Phương Trang ───────────────────────────────────────────────────
+  // ────────────────────────────────────────────────────────────────────────────
+  // TICKETS – Phương Trang
+  // ────────────────────────────────────────────────────────────────────────────
 
   const buslineTickets = [
     { name: 'Hà Nội → TP. Hồ Chí Minh', description: 'Xe limousine giường nằm, khởi hành 19:00', price: 350000 },
@@ -230,7 +343,8 @@ async function run() {
 
   for (const ticket of buslineTickets) {
     await findOrCreate(
-      payload, 'tickets',
+      payload,
+      'tickets',
       { and: [{ name: { equals: ticket.name } }, { tenant: { equals: busline.id } }] },
       { ...ticket, status: 'active', tenant: busline.id },
     )

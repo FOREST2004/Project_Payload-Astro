@@ -1,13 +1,15 @@
 import type { CollectionConfig } from 'payload'
+// import { isSuperAdmin } from '../../access/isSupperAdmin'
+import { isTenantMember, filterByUserTenants } from './access'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
   admin: { useAsTitle: 'title' },
   access: {
-    read: () => true,
-    create: () => true,
-    update: () => true,
-    delete: () => true,
+    read: isTenantMember,
+    create: isTenantMember,
+    update: isTenantMember,
+    delete: isTenantMember,
   },
   fields: [
     {
@@ -34,6 +36,7 @@ export const Pages: CollectionConfig = {
       required: true,
       index: true,
       admin: { position: 'sidebar' },
+      filterOptions: filterByUserTenants,
     },
   ],
 }

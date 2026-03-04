@@ -1,14 +1,16 @@
 import type { CollectionConfig } from 'payload'
+// import { isSuperAdmin } from '../../access/isSupperAdmin'
+import { isTenantMember, filterByUserTenants } from '../Pages/access'
 
 const Users: CollectionConfig = {
   slug: 'users',
   auth: true,
   admin: { useAsTitle: 'email' },
   access: {
-    read: () => true,
-    create: () => true,
-    update: () => true,
-    delete: () => true,
+    read: isTenantMember,
+    create: isTenantMember,
+    update: isTenantMember,
+    delete: isTenantMember,
   },
   fields: [
     {
@@ -31,6 +33,7 @@ const Users: CollectionConfig = {
           type: 'relationship',
           relationTo: 'tenants',
           required: true,
+          filterOptions: filterByUserTenants,
         },
         {
           name: 'roles',
