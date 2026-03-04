@@ -1,5 +1,15 @@
 const API_URL = import.meta.env.PAYLOAD_API_URL;
 
+export type MediaFile = {
+  id: string;
+  url: string;
+  filename: string;
+  alt?: string;
+  mimeType?: string;
+  width?: number;
+  height?: number;
+};
+
 export type Tenant = {
   id: string;
   name: string;
@@ -7,6 +17,7 @@ export type Tenant = {
   domain?: string;
   public?: boolean;
   contact?: { phone?: string; email?: string; address?: string };
+  images?: MediaFile[];
 };
 
 export type Page = {

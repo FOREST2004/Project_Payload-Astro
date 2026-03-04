@@ -49,5 +49,12 @@ export const Tenants: CollectionConfig = {
         { name: "address", type: "textarea" },
       ],
     },
+    {
+      name: "images",
+      type: "relationship",
+      relationTo: "media",
+      hasMany: true,
+      label: "Ảnh quảng cáo",
+    },
   ],
 };

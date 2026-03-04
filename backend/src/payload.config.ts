@@ -9,17 +9,19 @@ import { Tickets } from './collections/Tickets/Tickets'
 import { SiteSettings } from './collections/SiteSettings/SiteSettings'
 import Users from './collections/Users/Users'
 import { Orders } from './collections/Orders/Orders'
+import { Media } from './collections/Medias/Medias'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
   admin: {
     user: 'users',
   },
   secret: process.env.PAYLOAD_SECRET as string,
   editor: lexicalEditor({}),
-  collections: [Tenants, Pages, Tickets, SiteSettings, Users, Orders],
+  collections: [Tenants, Pages, Tickets, SiteSettings, Users, Orders, Media],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
