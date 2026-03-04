@@ -1,9 +1,5 @@
 import path from 'path'
-import { fileURLToPath } from 'url'
 import type { CollectionConfig } from 'payload'
-
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -11,7 +7,7 @@ export const Media: CollectionConfig = {
     read: () => true,
   },
   upload: {
-    staticDir: path.resolve(dirname, '../../../publics/images'),
+    staticDir: path.resolve(process.cwd(), 'public/media'),
     staticURL: '/media',
   },
   hooks: {

@@ -8,9 +8,9 @@ const getUserTenantIds = (user: any): string[] => {
     .filter(Boolean); //filter lọc ra các giá trị falsy, lọc bỏ các giá trị falsy, chỉ lấy các giá trị truthy
 };
 
-// Dùng cho read / update / delete
+// Dùng cho update / delete
 export const isTenantMember: Access = ({ req }) => {
-  if (!req?.user) return true;
+  if (!req?.user) return false;
   if (req.user.roles?.includes("super-admin")) return true;
 
   const tenantIds = getUserTenantIds(req.user);
@@ -23,7 +23,7 @@ export const isTenantMember: Access = ({ req }) => {
 
 // Dùng cho create
 export const filterByUserTenants = ({ user }: { user: any }) => {
-  if (!user) return true;
+  if (!user) return false;
   if (user?.roles?.includes("super-admin")) return true;
 
   const tenantIds = getUserTenantIds(user);

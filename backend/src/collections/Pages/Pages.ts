@@ -6,7 +6,7 @@ export const Pages: CollectionConfig = {
   slug: 'pages',
   admin: { useAsTitle: 'title' },
   access: {
-    read: isTenantMember,
+    read: () => true,
     create: isTenantMember,
     update: isTenantMember,
     delete: isTenantMember,

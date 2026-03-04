@@ -7,7 +7,7 @@ export const Orders: CollectionConfig = {
     useAsTitle: 'orderCode',
   },
   access: {
-    read: isTenantMember,
+    read: () => true,
     create: isTenantMember,
     update: isTenantMember,
     delete: isTenantMember,

@@ -9,7 +9,7 @@ export const SiteSettings: CollectionConfig = {
     description: "Cấu hình giao diện cho từng tenant",
   },
   access: {
-    read: isTenantMember,
+    read: () => true,
     create: isTenantMember,
     update: isTenantMember,
     delete: isTenantMember,

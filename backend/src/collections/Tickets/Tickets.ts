@@ -6,7 +6,7 @@ export const Tickets: CollectionConfig = {
   slug: 'tickets',
   admin: { useAsTitle: 'name' },
   access: {
-    read: isTenantMember,
+    read: () => true,
     create: isTenantMember,
     update: isTenantMember,
     delete: isTenantMember,

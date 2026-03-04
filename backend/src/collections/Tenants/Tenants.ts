@@ -6,7 +6,7 @@ export const Tenants: CollectionConfig = {
   slug: "tenants",
   admin: { useAsTitle: "name" },
   access: {
-    read: isTenantMember,
+    read: () => true,
     create: isTenantMember,
     update: isTenantMember,
     delete: isTenantMember,
