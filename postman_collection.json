@@ -1,0 +1,490 @@
+{
+  "info": {
+    "name": "Payload-Astro API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/users/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/users/logout"
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/users/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tenants",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/tenants",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tenants"],
+              "query": [
+                { "key": "where[domain][equals]", "value": "vinwonders.local", "disabled": true },
+                { "key": "where[slug][equals]", "value": "funpark", "disabled": true },
+                { "key": "where[public][equals]", "value": "true", "disabled": true },
+                { "key": "limit", "value": "10", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/tenants/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "JWT {{token}}" }
+            ],
+            "url": "{{base_url}}/api/tenants",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tenant Name\",\n  \"slug\": \"tenant-slug\",\n  \"domain\": \"tenant.local\",\n  \"public\": true,\n  \"contact\": {\n    \"phone\": \"0900000000\",\n    \"email\": \"contact@tenant.local\",\n    \"address\": \"Địa chỉ\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "JWT {{token}}" }
+            ],
+            "url": "{{base_url}}/api/tenants/:id",
+            "variable": [{ "key": "id", "value": "" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/tenants/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/users"
+          }
+        },
+        {
+          "name": "Get by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/users/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "JWT {{token}}" }
+            ],
+            "url": "{{base_url}}/api/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"roles\": [\"user\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "JWT {{token}}" }
+            ],
+            "url": "{{base_url}}/api/users/:id",
+            "variable": [{ "key": "id", "value": "" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"updated@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/users/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pages",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/pages",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pages"],
+              "query": [
+                { "key": "where[tenant][equals]", "value": "", "disabled": true },
+                { "key": "where[slug][equals]", "value": "home", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/pages/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "JWT {{token}}" }
+            ],
+            "url": "{{base_url}}/api/pages",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Trang chủ\",\n  \"slug\": \"home\",\n  \"content\": \"Nội dung trang\",\n  \"tenant\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "JWT {{token}}" }
+            ],
+            "url": "{{base_url}}/api/pages/:id",
+            "variable": [{ "key": "id", "value": "" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Title\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/pages/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tickets",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/tickets",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets"],
+              "query": [
+                { "key": "where[tenant][equals]", "value": "", "disabled": true },
+                { "key": "where[status][equals]", "value": "active", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/tickets/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "JWT {{token}}" }
+            ],
+            "url": "{{base_url}}/api/tickets",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Vé người lớn\",\n  \"description\": \"Mô tả vé\",\n  \"price\": 200000,\n  \"status\": \"active\",\n  \"tenant\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "JWT {{token}}" }
+            ],
+            "url": "{{base_url}}/api/tickets/:id",
+            "variable": [{ "key": "id", "value": "" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 250000\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/tickets/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders"],
+              "query": [
+                { "key": "where[tenant][equals]", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/orders/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/orders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderCode\": \"ORD-20240101-ABCDE\",\n  \"tenant\": \"\",\n  \"ticket\": \"\",\n  \"quantity\": 1,\n  \"totalAmount\": 200000,\n  \"buyerName\": \"Nguyễn Văn A\",\n  \"buyerEmail\": \"a@example.com\",\n  \"buyerPhone\": \"0901234567\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "JWT {{token}}" }
+            ],
+            "url": "{{base_url}}/api/orders/:id",
+            "variable": [{ "key": "id", "value": "" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/orders/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Site Settings",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/site-settings",
+              "host": ["{{base_url}}"],
+              "path": ["api", "site-settings"],
+              "query": [
+                { "key": "where[tenant][equals]", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/site-settings/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "JWT {{token}}" }
+            ],
+            "url": "{{base_url}}/api/site-settings",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenant\": \"\",\n  \"header\": {\n    \"enabled\": true,\n    \"logoText\": \"Logo\",\n    \"navLinks\": []\n  },\n  \"theme\": {\n    \"primaryColor\": \"#3b82f6\",\n    \"heroBgFrom\": \"#1e3a5f\",\n    \"heroBgTo\": \"#3b82f6\"\n  },\n  \"footer\": {\n    \"enabled\": true,\n    \"columns\": []\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "JWT {{token}}" }
+            ],
+            "url": "{{base_url}}/api/site-settings/:id",
+            "variable": [{ "key": "id", "value": "" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"theme\": {\n    \"primaryColor\": \"#e84118\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/site-settings/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Media",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/media"
+          }
+        },
+        {
+          "name": "Get by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/media/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        },
+        {
+          "name": "Upload",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/media",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "" },
+                { "key": "alt", "value": "Mô tả ảnh", "type": "text" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+            "url": "{{base_url}}/api/media/:id",
+            "variable": [{ "key": "id", "value": "" }]
+          }
+        }
+      ]
+    }
+  ]
+}

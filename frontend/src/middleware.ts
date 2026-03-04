@@ -26,7 +26,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   if (!tenant) {
     try {
       const API_URL =
-        import.meta.env.PAYLOAD_API_URL || "http://localhost:3000";
+        import.meta.env.PAYLOAD_API_URL;
       const res = await fetch(
         `${API_URL}/api/tenants?where[public][equals]=true&limit=1`,
       );
