@@ -1,25 +1,26 @@
 ---
-import type { Tenant, SiteSettings } from '../lib/payload'
+import type { Tenant, SiteSettings } from "../lib/payload";
+import MobileNav from "./MobileNav";
 
 interface Props {
-  tenant: Tenant
-  settings: SiteSettings | null
+  tenant: Tenant;
+  settings: SiteSettings | null;
 }
 
-const { tenant, settings } = Astro.props
-const header = settings?.header
-const topBar = header?.topBar
-const logoText = header?.logoText || tenant.name
-const navLinks = header?.navLinks ?? []
+const { tenant, settings } = Astro.props;
+const header = settings?.header;
+const topBar = header?.topBar;
+const logoText = header?.logoText || tenant.name;
+const navLinks = header?.navLinks ?? [];
 
-const primaryColor = settings?.theme?.primaryColor ?? '#3b82f6'
-const darkColor = settings?.theme?.darkColor ?? '#1e3a5f'
+const primaryColor = settings?.theme?.primaryColor ?? "#3b82f6";
+const darkColor = settings?.theme?.darkColor ?? "#1e3a5f";
 ---
 
 <style define:vars={{ primaryColor, darkColor }}>
   .top-bar {
     background: var(--darkColor);
-    color: rgba(255,255,255,0.85);
+    color: rgba(255, 255, 255, 0.85);
     font-size: 0.8rem;
     padding: 0.35rem 1.5rem;
     display: flex;
@@ -33,7 +34,7 @@ const darkColor = settings?.theme?.darkColor ?? '#1e3a5f'
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -45,30 +46,62 @@ const darkColor = settings?.theme?.darkColor ?? '#1e3a5f'
     color: white;
     letter-spacing: -0.02em;
   }
-  nav { display: flex; align-items: center; gap: 0.25rem; }
-  nav a {
-    color: rgba(255,255,255,0.9);
+  /* Desktop nav */
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .desktop-nav a {
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
     padding: 0.4rem 0.85rem;
     border-radius: 6px;
     font-size: 0.95rem;
     transition: background 0.15s;
   }
-  nav a:hover { background: rgba(255,255,255,0.15); color: white; }
+  .desktop-nav a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+  }
+
+  /* Mobile nav — ẩn desktop, hiện mobile */
+  .mobile-nav-trigger {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .desktop-nav {
+      display: none;
+    }
+    .mobile-nav-trigger {
+      display: flex;
+    }
+  }
 </style>
 
-{topBar?.enabled && (
-  <div class="top-bar">
-    <span>{topBar.leftText ?? ''}</span>
-    <span>{topBar.rightText ?? ''}</span>
-  </div>
-)}
+{
+  topBar?.enabled && (
+    <div class="top-bar">
+      <span>{topBar.leftText ?? ""}</span>
+      <span>{topBar.rightText ?? ""}</span>
+    </div>
+  )
+}
 
 <header class="site-header">
   <a href="/" class="logo" transition:name="logo">{logoText}</a>
-  <nav>
-    {navLinks.map((link) => (
-      <a href={link.url}>{link.label}</a>
-    ))}
+
+  <nav class="desktop-nav">
+    {navLinks.map((link) => <a href={link.url}>{link.label}</a>)}
   </nav>
+
+  <div class="mobile-nav-trigger">
+    <MobileNav
+      client:media="(max-width: 640px)"
+      links={navLinks}
+      primaryColor={primaryColor}
+      logoText={logoText}
+    />
+  </div>
 </header>

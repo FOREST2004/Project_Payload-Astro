@@ -82,47 +82,64 @@ async function fetchPayload<T>(path: string): Promise<T> {
   return res.json();
 }
 
-export async function getTenantByDomain(domain: string): Promise<Tenant | null> {
+export async function getTenantByDomain(
+  domain: string,
+): Promise<Tenant | null> {
   try {
     const data = await fetchPayload<{ docs: Tenant[] }>(
-      `/tenants?where[domain][equals]=${encodeURIComponent(domain)}&limit=1`
+      `/tenants?where[domain][equals]=${encodeURIComponent(domain)}&limit=1`,
     );
     return data.docs[0] ?? null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 export async function getTenantBySlug(slug: string): Promise<Tenant | null> {
   try {
     const data = await fetchPayload<{ docs: Tenant[] }>(
-      `/tenants?where[slug][equals]=${encodeURIComponent(slug)}&limit=1`
+      `/tenants?where[slug][equals]=${encodeURIComponent(slug)}&limit=1`,
     );
     return data.docs[0] ?? null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
-export async function getPageBySlug(tenantId: string, slug: string): Promise<Page | null> {
+export async function getPageBySlug(
+  tenantId: string,
+  slug: string,
+): Promise<Page | null> {
   try {
     const data = await fetchPayload<{ docs: Page[] }>(
-      `/pages?where[tenant][equals]=${tenantId}&where[slug][equals]=${encodeURIComponent(slug)}&limit=1`
+      `/pages?where[tenant][equals]=${tenantId}&where[slug][equals]=${encodeURIComponent(slug)}&limit=1`,
     );
     return data.docs[0] ?? null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 export async function getTickets(tenantId: string): Promise<Ticket[]> {
   try {
     const data = await fetchPayload<{ docs: Ticket[] }>(
-      `/tickets?where[tenant][equals]=${tenantId}&where[status][equals]=active&limit=100`
+      `/tickets?where[tenant][equals]=${tenantId}&where[status][equals]=active&limit=100`,
     );
     return data.docs;
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
-export async function getSiteSettings(tenantId: string): Promise<SiteSettings | null> {
+export async function getSiteSettings(
+  tenantId: string,
+): Promise<SiteSettings | null> {
   try {
     const data = await fetchPayload<{ docs: SiteSettings[] }>(
-      `/site-settings?where[tenant][equals]=${tenantId}&limit=1`
+      `/site-settings?where[tenant][equals]=${tenantId}&limit=1`,
     );
     return data.docs[0] ?? null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }

@@ -1,0 +1,225 @@
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 1.75rem 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  border: 1px solid #eef0f3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+.name {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.desc {
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.55;
+  flex: 1;
+}
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f0f0f0;
+}
+.price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+.buyBtn {
+  background: var(--primary);
+  border: none;
+  color: white;
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Success / Error */
+.center {
+  text-align: center;
+  padding: 1rem 0;
+}
+.icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+.successTitle {
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-bottom: 0.4rem;
+}
+.orderNote {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+.orderCode {
+  background: #f4f4f8;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+}
+.hint {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+.errorTitle {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+.errorMsg {
+  color: #e53e3e;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Form */
+.ticketTitle {
+  margin-bottom: 0.25rem;
+  font-size: 1.1rem;
+}
+.ticketPrice {
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+.qtyRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.qtyNum {
+  min-width: 28px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.totalRight {
+  margin-left: auto;
+  font-weight: 800;
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+.qtyBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--primary);
+  background: white;
+  color: var(--primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.field {
+  margin-bottom: 0.85rem;
+}
+.label {
+  font-size: 0.8rem;
+  color: #555;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  display: block;
+}
+.input,
+.select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  font-family: inherit;
+  background: white;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.cancelBtn {
+  flex: 1;
+  padding: 0.65rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+.submitBtn {
+  flex: 2;
+  padding: 0.65rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+.submitBtn:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+.primaryBtn {
+  background: var(--primary);
+  border: none;
+  color: white;
+  padding: 0.65rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-family: inherit;
+}

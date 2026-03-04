@@ -1,68 +1,67 @@
 ---
-import { getPageBySlug, getSiteSettings } from '../lib/payload'
-import type { Tenant } from '../lib/payload'
-import Layout from '../components/Layout.astro'
+import { getPageBySlug, getSiteSettings } from "../lib/payload";
+import type { Tenant } from "../lib/payload";
+import Layout from "../components/Layout.astro";
 
-const tenant = Astro.locals.tenant as Tenant | null
+const tenant = Astro.locals.tenant as Tenant | null;
 
 if (!tenant) {
-  return new Response('Tenant not found', { status: 404 })
+  return new Response("Tenant not found", { status: 404 });
 }
 
 const [page, settings] = await Promise.all([
-  getPageBySlug(tenant.id, 'home'),
+  getPageBySlug(tenant.id, "home"),
   getSiteSettings(tenant.id),
-])
+]);
 
-const heroBgFrom = settings?.theme?.heroBgFrom ?? '#1e3a5f'
-const heroBgTo = settings?.theme?.heroBgTo ?? '#3b82f6'
-const primaryColor = settings?.theme?.primaryColor ?? '#3b82f6'
+const heroBgFrom = settings?.theme?.heroBgFrom ?? "#1e3a5f";
+const heroBgTo = settings?.theme?.heroBgTo ?? "#3b82f6";
+const primaryColor = settings?.theme?.primaryColor ?? "#3b82f6";
 ---
 
 <Layout tenant={tenant} settings={settings} title={page?.title ?? tenant.name}>
-  <!-- Hero -->
-  <section class="hero" style={`background: linear-gradient(135deg, ${heroBgFrom} 0%, ${heroBgTo} 100%)`}>
+  <section
+    class="hero"
+    style={`background: linear-gradient(135deg, ${heroBgFrom} 0%, ${heroBgTo} 100%)`}
+  >
     <div class="hero-inner container">
       <h1 class="hero-title" transition:name="hero-title">
         {page?.title ?? `Chào mừng đến ${tenant.name}`}
       </h1>
-      {page?.content && (
-        <p class="hero-desc">{page.content}</p>
-      )}
-      <a href="/tickets" class="btn-hero">
-        Xem vé ngay →
-      </a>
+      {page?.content && <p class="hero-desc">{page.content}</p>}
+      <a href="/tickets" class="btn-hero"> Xem vé ngay → </a>
     </div>
   </section>
 
-  <!-- Info cards nếu tenant có contact -->
-  {tenant.contact && (
-    <section class="info-section container">
-      <div class="info-grid">
-        {tenant.contact.phone && (
-          <div class="info-card">
-            <div class="info-icon">📞</div>
-            <div class="info-label">Hotline</div>
-            <div class="info-value">{tenant.contact.phone}</div>
-          </div>
-        )}
-        {tenant.contact.email && (
-          <div class="info-card">
-            <div class="info-icon">✉️</div>
-            <div class="info-label">Email</div>
-            <div class="info-value">{tenant.contact.email}</div>
-          </div>
-        )}
-        {tenant.contact.address && (
-          <div class="info-card">
-            <div class="info-icon">📍</div>
-            <div class="info-label">Địa chỉ</div>
-            <div class="info-value">{tenant.contact.address}</div>
-          </div>
-        )}
-      </div>
-    </section>
-  )}
+  {
+    tenant.contact && (
+      <section class="info-section container">
+        <div class="info-grid">
+          {tenant.contact.phone && (
+            <div class="info-card">
+              <div class="info-icon">📞</div>
+              <div class="info-label">Hotline</div>
+              <div class="info-value">{tenant.contact.phone}</div>
+            </div>
+          )}
+          {tenant.contact.email && (
+            <div class="info-card">
+              <div class="info-icon">✉️</div>
+              <div class="info-label">Email</div>
+              <div class="info-value">{tenant.contact.email}</div>
+            </div>
+          )}
+          {tenant.contact.address && (
+            <div class="info-card">
+              <div class="info-icon">📍</div>
+              <div class="info-label">Địa chỉ</div>
+              <div class="info-value">{tenant.contact.address}</div>
+            </div>
+          )}
+        </div>
+      </section>
+    )
+  }
 </Layout>
 
 <style define:vars={{ primaryColor }}>
@@ -71,7 +70,10 @@ const primaryColor = settings?.theme?.primaryColor ?? '#3b82f6'
     color: white;
     text-align: center;
   }
-  .hero-inner { max-width: 700px; margin: 0 auto; }
+  .hero-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
   .hero-title {
     font-size: clamp(2rem, 5vw, 3.25rem);
     font-weight: 800;
@@ -89,22 +91,26 @@ const primaryColor = settings?.theme?.primaryColor ?? '#3b82f6'
   .btn-hero {
     display: inline-block;
     padding: 0.75rem 1.75rem;
-    border: 2px solid rgba(255,255,255,0.75);
+    border: 2px solid rgba(255, 255, 255, 0.75);
     border-radius: 8px;
     color: white;
     text-decoration: none;
     font-weight: 600;
     font-size: 1rem;
-    background: rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(4px);
-    transition: background 0.2s, border-color 0.2s;
+    transition:
+      background 0.2s,
+      border-color 0.2s;
   }
   .btn-hero:hover {
-    background: rgba(255,255,255,0.22);
+    background: rgba(255, 255, 255, 0.22);
     border-color: white;
   }
 
-  .info-section { padding: 3rem 1.5rem; }
+  .info-section {
+    padding: 3rem 1.5rem;
+  }
   .info-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -115,9 +121,22 @@ const primaryColor = settings?.theme?.primaryColor ?? '#3b82f6'
     border-radius: 12px;
     padding: 1.75rem 1.5rem;
     text-align: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
   }
-  .info-icon { font-size: 1.75rem; margin-bottom: 0.6rem; }
-  .info-label { font-size: 0.78rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
-  .info-value { font-size: 1rem; font-weight: 600; color: var(--primaryColor); }
+  .info-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.6rem;
+  }
+  .info-label {
+    font-size: 0.78rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+  }
+  .info-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primaryColor);
+  }
 </style>
