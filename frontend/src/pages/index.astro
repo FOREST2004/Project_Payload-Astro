@@ -2,6 +2,8 @@
 import { getPageBySlug, getSiteSettings } from "../lib/payload";
 import type { Tenant } from "../lib/payload";
 import Layout from "../components/Layout.astro";
+import ImageGallery from "../components/ImageGallery";
+import HeroSection from "../components/HeroSection";
 
 const tenant = Astro.locals.tenant as Tenant | null;
 
@@ -20,18 +22,21 @@ const primaryColor = settings?.theme?.primaryColor ?? "#3b82f6";
 ---
 
 <Layout tenant={tenant} settings={settings} title={page?.title ?? tenant.name}>
-  <section
-    class="hero"
-    style={`background: linear-gradient(135deg, ${heroBgFrom} 0%, ${heroBgTo} 100%)`}
-  >
-    <div class="hero-inner container">
-      <h1 class="hero-title" transition:name="hero-title">
-        {page?.title ?? `Chào mừng đến ${tenant.name}`}
-      </h1>
-      {page?.content && <p class="hero-desc">{page.content}</p>}
-      <a href="/tickets" class="btn-hero"> Xem vé ngay → </a>
-    </div>
-  </section>
+  <HeroSection
+    client:load
+    title={page?.title ?? `Chào mừng đến ${tenant.name}`}
+    content={page?.content}
+    heroBgFrom={heroBgFrom}
+    heroBgTo={heroBgTo}
+  />
+
+  {
+    tenant.images && tenant.images.length > 0 && (
+      <section class="gallery-section container">
+        <ImageGallery client:idle images={tenant.images} />
+      </section>
+    )
+  }
 
   {
     tenant.contact && (
@@ -65,49 +70,9 @@ const primaryColor = settings?.theme?.primaryColor ?? "#3b82f6";
 </Layout>
 
 <style define:vars={{ primaryColor }}>
-  .hero {
-    padding: 5rem 1.5rem;
-    color: white;
-    text-align: center;
+  .gallery-section {
+    padding: 3rem 1.5rem 0;
   }
-  .hero-inner {
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  .hero-title {
-    font-size: clamp(2rem, 5vw, 3.25rem);
-    font-weight: 800;
-    line-height: 1.15;
-    margin-bottom: 1.25rem;
-    letter-spacing: -0.03em;
-  }
-  .hero-desc {
-    font-size: 1.15rem;
-    opacity: 0.88;
-    line-height: 1.7;
-    margin-bottom: 2rem;
-    white-space: pre-line;
-  }
-  .btn-hero {
-    display: inline-block;
-    padding: 0.75rem 1.75rem;
-    border: 2px solid rgba(255, 255, 255, 0.75);
-    border-radius: 8px;
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(4px);
-    transition:
-      background 0.2s,
-      border-color 0.2s;
-  }
-  .btn-hero:hover {
-    background: rgba(255, 255, 255, 0.22);
-    border-color: white;
-  }
-
   .info-section {
     padding: 3rem 1.5rem;
   }
