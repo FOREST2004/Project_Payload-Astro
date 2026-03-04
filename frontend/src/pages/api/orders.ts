@@ -20,7 +20,6 @@ export const POST: APIRoute = async ({ request }) => {
       buyerName,
       buyerEmail,
       buyerPhone,
-      paymentMethod,
     } = body;
 
     if (
@@ -54,9 +53,6 @@ export const POST: APIRoute = async ({ request }) => {
         buyerName,
         buyerEmail,
         buyerPhone,
-        paymentMethod: paymentMethod || "cash",
-        status: "pending",
-        paymentStatus: "unpaid",
       }),
     });
 

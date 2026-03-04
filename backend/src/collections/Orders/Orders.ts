@@ -34,19 +34,6 @@ export const Orders: CollectionConfig = {
       filterOptions: filterByUserTenants,
     },
     {
-      name: 'status',
-      type: 'select',
-      label: 'Trạng thái',
-      defaultValue: 'pending',
-      index: true,
-      options: [
-        { label: 'Chờ xác nhận', value: 'pending' },
-        { label: 'Đã xác nhận', value: 'confirmed' },
-        { label: 'Đã hoàn thành', value: 'completed' },
-        { label: 'Đã hủy', value: 'cancelled' },
-      ],
-    },
-    {
       name: 'buyerName',
       type: 'text',
       label: 'Tên người mua',
@@ -87,30 +74,5 @@ export const Orders: CollectionConfig = {
       required: true,
       min: 0,
     },
-    {
-      name: 'paymentMethod',
-      type: 'select',
-      label: 'Phương thức thanh toán',
-      options: [
-        { label: 'Tiền mặt', value: 'cash' },
-        { label: 'Chuyển khoản', value: 'bank-transfer' },
-        { label: 'VNPay', value: 'vnpay' },
-        { label: 'MoMo', value: 'momo' },
-        { label: 'ZaloPay', value: 'zalopay' },
-      ],
-    },
-    {
-      name: 'paymentStatus',
-      type: 'select',
-      label: 'Trạng thái thanh toán',
-      defaultValue: 'unpaid',
-      index: true,
-      options: [
-        { label: 'Chưa thanh toán', value: 'unpaid' },
-        { label: 'Đã thanh toán', value: 'paid' },
-        { label: 'Đã hoàn tiền', value: 'refunded' },
-      ],
-    },
-
   ],
 }

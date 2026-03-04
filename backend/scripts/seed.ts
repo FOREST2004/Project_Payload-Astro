@@ -433,9 +433,6 @@ async function run() {
       buyerPhone: '0912345678',
       quantity: 2,
       totalAmount: 400000,
-      status: 'completed',
-      paymentMethod: 'vnpay',
-      paymentStatus: 'paid',
     },
     {
       orderCode: 'FP-2024-0002',
@@ -446,9 +443,6 @@ async function run() {
       buyerPhone: '0987654321',
       quantity: 1,
       totalAmount: 450000,
-      status: 'confirmed',
-      paymentMethod: 'momo',
-      paymentStatus: 'paid',
     },
     {
       orderCode: 'FP-2024-0003',
@@ -459,9 +453,6 @@ async function run() {
       buyerPhone: '0901234567',
       quantity: 1,
       totalAmount: 500000,
-      status: 'pending',
-      paymentMethod: 'bank-transfer',
-      paymentStatus: 'unpaid',
     },
   ]
 
@@ -505,9 +496,6 @@ async function run() {
       buyerPhone: '0933445566',
       quantity: 2,
       totalAmount: 400000,
-      status: 'completed',
-      paymentMethod: 'zalopay',
-      paymentStatus: 'paid',
     },
     {
       orderCode: 'BL-2024-0002',
@@ -518,9 +506,6 @@ async function run() {
       buyerPhone: '0944556677',
       quantity: 1,
       totalAmount: 280000,
-      status: 'confirmed',
-      paymentMethod: 'vnpay',
-      paymentStatus: 'paid',
     },
     {
       orderCode: 'BL-2024-0003',
@@ -531,9 +516,6 @@ async function run() {
       buyerPhone: '0955667788',
       quantity: 3,
       totalAmount: 360000,
-      status: 'pending',
-      paymentMethod: 'momo',
-      paymentStatus: 'unpaid',
     },
   ]
 

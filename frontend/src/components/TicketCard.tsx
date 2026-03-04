@@ -16,13 +16,6 @@ type Props = {
 
 type Step = "idle" | "form" | "submitting" | "success" | "error";
 
-const PAYMENT_OPTIONS = [
-  { value: "cash", label: "Tiền mặt" },
-  { value: "bank-transfer", label: "Chuyển khoản" },
-  { value: "vnpay", label: "VNPay" },
-  { value: "momo", label: "MoMo" },
-  { value: "zalopay", label: "ZaloPay" },
-];
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("vi-VN", {
@@ -43,7 +36,6 @@ export default function TicketCard({ ticket, tenantId, primaryColor }: Props) {
     name: "",
     email: "",
     phone: "",
-    payment: "cash",
   });
   const [orderCode, setOrderCode] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -54,7 +46,7 @@ export default function TicketCard({ ticket, tenantId, primaryColor }: Props) {
   function reset() {
     setStep("idle");
     setQty(1);
-    setForm({ name: "", email: "", phone: "", payment: "cash" });
+    setForm({ name: "", email: "", phone: "" });
     setOrderCode("");
     setErrorMsg("");
   }
@@ -74,7 +66,6 @@ export default function TicketCard({ ticket, tenantId, primaryColor }: Props) {
           buyerName: form.name,
           buyerEmail: form.email,
           buyerPhone: form.phone,
-          paymentMethod: form.payment,
         }),
       });
       const data = await res.json();
@@ -220,27 +211,6 @@ export default function TicketCard({ ticket, tenantId, primaryColor }: Props) {
                     }
                     placeholder="0901234567"
                   />
-                </div>
-
-                <div className={s.field}>
-                  <label className={s.label} htmlFor="payment-method">
-                    Phương thức thanh toán
-                  </label>
-                  <select
-                    id="payment-method"
-                    title="Phương thức thanh toán"
-                    className={s.select}
-                    value={form.payment}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, payment: e.target.value }))
-                    }
-                  >
-                    {PAYMENT_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
                 </div>
 
                 <div className={s.actions}>
