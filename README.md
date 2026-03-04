@@ -1,6 +1,34 @@
 # Project Payload-Astro
 
-Nền tảng bán vé sự kiện multi-tenant, xây dựng bằng **Payload CMS** (backend) và **Astro + React** (frontend).
+Nền tảng bán vé sự kiện **multi-tenant**, xây dựng bằng **Payload CMS** (backend) và **Astro + React** (frontend).
+
+---
+
+## Tổng quan hệ thống
+
+Hệ thống cho phép nhiều **tenant** (tổ chức / sự kiện) cùng vận hành trên một nền tảng dùng chung, nhưng dữ liệu hoàn toàn độc lập với nhau. Mỗi tenant có trang web riêng, vé riêng, đơn hàng riêng và giao diện tuỳ chỉnh riêng.
+
+### Phân quyền
+
+| Vai trò | Quyền hạn |
+|---|---|
+| **Super Admin** | Toàn quyền: quản lý tất cả tenant, user, dữ liệu trên toàn hệ thống |
+| **Tenant Admin** | Chỉ xem và quản lý dữ liệu thuộc tenant của mình |
+
+### Tenant Admin có thể làm gì?
+
+Mỗi tenant admin đăng nhập vào admin panel (`/admin`) và quản lý toàn bộ nội dung của tenant mình:
+
+- **Trang nội dung (Pages)** — Tạo và chỉnh sửa các trang như trang chủ, giới thiệu, liên hệ. Nội dung hiển thị trực tiếp lên website.
+- **Vé (Tickets)** — Thêm, sửa, xoá các loại vé: tên, mô tả, giá.
+- **Đơn hàng (Orders)** — Xem danh sách đơn đặt vé từ khách hàng.
+- **Ảnh quảng cáo (Media)** — Upload ảnh để hiển thị trên trang chủ dạng carousel.
+- **Cài đặt giao diện (Site Settings)**:
+  - Header: bật/tắt top bar, text thông báo, logo, menu điều hướng
+  - Footer: các cột nội dung (hotline, địa chỉ, giờ làm việc...)
+  - Theme: màu chủ đạo, màu gradient hero section, font chữ
+
+Thay đổi cài đặt giao diện phản ánh ngay lên website của tenant mà không cần deploy lại.
 
 ---
 
