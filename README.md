@@ -4,7 +4,7 @@ Nền tảng bán vé sự kiện **multi-tenant**, xây dựng bằng **Payload
 
 ## Video demo
 
-- Video chạy mô tả: [https://youtu.be/wS47TI5uzuI](https://youtu.be/wS47TI5uzuI)
+- Video chạy project và giải thích cách áp dụng Payload + Astro:: [https://youtu.be/wS47TI5uzuI](https://youtu.be/wS47TI5uzuI)
 
 ---
 
