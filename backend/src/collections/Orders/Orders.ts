@@ -8,7 +8,7 @@ export const Orders: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: isTenantMember,
+    create: () => true,
     update: isTenantMember,
     delete: isTenantMember,
   },

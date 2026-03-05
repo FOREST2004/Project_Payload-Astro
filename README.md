@@ -2,6 +2,10 @@
 
 Nền tảng bán vé sự kiện **multi-tenant**, xây dựng bằng **Payload CMS** (backend) và **Astro + React** (frontend).
 
+## Video demo
+
+- Video chạy mô tả: [https://youtu.be/wS47TI5uzuI](https://youtu.be/wS47TI5uzuI)
+
 ---
 
 ## Tổng quan hệ thống
