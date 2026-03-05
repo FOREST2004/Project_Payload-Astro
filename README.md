@@ -71,11 +71,44 @@ PAYLOAD_PUBLIC_SERVER_URL=http://localhost:3000
 ```bash
 cd backend
 npm install
-npm run seed       # Seed dữ liệu mẫu
 npm run dev        # http://localhost:3000
 ```
 
 Admin panel: `http://localhost:3000/admin`
+
+### Seed dữ liệu mẫu
+
+Trước khi chạy seed, cần **tạm thời mở quyền truy cập** để script seed có thể ghi dữ liệu mà không bị chặn bởi access control.
+
+**Bước 1 — Mở quyền tạm thời (2 file)**
+
+Trong `backend/src/collections/Pages/access/index.ts` và `backend/src/collections/Tenants/access/index.ts`, tìm dòng sau trong hàm `isTenantMember`:
+
+```ts
+// Trước
+if (!req?.user) return false;
+
+// Sửa thành
+if (!req?.user) return true;
+```
+
+> Cần sửa ở **cả 2 file**: `Pages/access/index.ts` và `Tenants/access/index.ts`
+
+**Bước 2 — Chạy seed**
+
+```bash
+npm run seed
+```
+
+**Bước 3 — Khôi phục lại (bắt buộc)**
+
+Sau khi seed xong, **đổi lại thành `return false`** ở cả 2 file:
+
+```ts
+if (!req?.user) return false;
+```
+
+> Nếu không khôi phục, hệ thống sẽ cho phép request không xác thực tạo/sửa/xóa dữ liệu.
 
 ### Dữ liệu mẫu sau khi seed
 
