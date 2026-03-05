@@ -1,0 +1,556 @@
+{
+  "info": {
+    "_postman_id": "d792a80b-6a1d-4e27-bfff-e90914f46c76",
+    "name": "Agency-API",
+    "description": "@Nexpando",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "32333995"
+  },
+  "item": [
+    {
+      "name": "Agency",
+      "item": [
+        {
+          "name": "List products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "x-contact-id",
+                "value": "FQvCoN6isFtPP4GwGOmkFxgHKFsTQGAx",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"limit\": 100,\r\n    \"skip\": 0\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agency/api/list-products-v2",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "agency",
+                "api",
+                "list-products-v2"
+              ]
+            },
+            "description": "# Get list of all products\n\n## Request\n\n- `limit`: The maximum number of products to return.\n    \n- `skip`: The number of products to skip from the beginning.\n    \n- `fromTime`: ISO format date time string (optional)\n    \n- `toTime`: ISO format date time string (optional)\n    \n- `categories`: List of category to filter product (optional)\n    \n\n## Response\n\nThe response will contain a list of products, each with detailed information as follows:\n\n``` json\n{\n    \"units\": [\n        {\n            \"slug\": \"ve-vao-cua\",\n            \"seatingPlan\": null,\n            \"hasSubUnit\": false,\n            \"name\": \"Công viên nước Đầm Sen\",\n            \"provider\": {\n                \"name\": \"Công ty cổ phần công viên nước Đầm Sen (DSN)\",\n                \"slug\": \"dam-sen\"\n            }\n        }\n    ],\n    \"products\": [\n        {\n            \"id\": 2813,\n            \"name\": \"Vé tháng 6\",\n            \"active\": true,\n            \"description\": {},\n            \"defaultPrice\": \"300000.00\",\n            \"admission\": true,\n            \"position\": 2,\n            \"picture\": \"\",\n            \"availableFrom\": null,\n            \"availableUntil\": null,\n            \"freePrice\": false,\n            \"hideWithoutVoucher\": false,\n            \"requireVoucher\": false,\n            \"allowCancel\": true,\n            \"maxPerOrder\": null,\n            \"minPerOrder\": null,\n            \"checkinAttention\": false,\n            \"internalName\": null,\n            \"originalPrice\": null,\n            \"requireApproval\": false,\n            \"salesChannels\":\"\u001fweb\u001fpos\u001fvnpay\u001fspos\u001fvnpay_ces\u001finvitation\u001f\",\n            \"generateTickets\": null,\n            \"requireBundling\": false,\n            \"showQuotaLeft\": false,\n            \"hiddenIfAvailableId\": null,\n            \"allowWaitinglist\": true,\n            \"issueGiftcard\": false,\n            \"grantMembershipDurationDays\": 0,\n            \"grantMembershipDurationLikeEvent\": true,\n            \"grantMembershipDurationMonths\": 0,\n            \"requireMembership\": false,\n            \"grantMembershipTypeId\": \"74\",\n            \"requireMembershipHidden\": false,\n            \"personalized\": true,\n            \"validityDynamicDurationDays\": null,\n            \"validityDynamicDurationHours\": null,\n            \"validityDynamicDurationMinutes\": null,\n            \"validityDynamicDurationMonths\": null,\n            \"validityDynamicStartChoice\": false,\n            \"validityDynamicStartChoiceDayLimit\": null,\n            \"validityFixedFrom\": null,\n            \"validityFixedUntil\": null,\n            \"validityMode\": null,\n            \"eventId\": 400,\n            \"categoryId\": null,\n            \"taxRuleId\": 110,\n            \"questions\": [\n                {\n                    \"id\": 596,\n                    \"question\": \"{\\\"en\\\": \\\"ticket_code\\\"}\",\n                    \"helpText\": {},\n                    \"type\": \"S\",\n                    \"required\": false,\n                    \"position\": 3,\n                    \"askDuringCheckin\": false,\n                    \"identifier\": \"ticket-code\",\n                    \"dependencyQuestionId\": null,\n                    \"dependencyValues\":\"\u001f\u001f\",\n                    \"hidden\": true,\n                    \"printOnInvoice\": false,\n                    \"validDateMax\": null,\n                    \"validDateMin\": null,\n                    \"validDatetimeMax\": null,\n                    \"validDatetimeMin\": null,\n                    \"validNumberMax\": null,\n                    \"validNumberMin\": null,\n                    \"validFilePortrait\": false,\n                    \"eventId\": 400\n                }\n            ],\n            \"unit\": \"ve-vao-cua\"\n        }\n}\n\n ```\n\n### Unit Object Description\n\nUnit can be a performance event, store, park which list products (show, service, item....)\n\n- `slug`: Slug of an unit\n    \n- `name`: Name of unit\n    \n\n### Product Object Description\n\n- `id`: Unique identifier for the product.\n    \n- `name`: The name of the product, available in multiple languages.\n    \n- `active`: Indicates if the product is currently active.\n    \n- `description`: Detailed description of the product, available in multiple languages.\n    \n- `defaultPrice`: Default price of the product.\n    \n- `admission`: Specifies if the product is an admission ticket.\n    \n- `position`: The position of the product in listings.\n    \n- `picture`: URL of the product image.\n    \n- `availableFrom`: Date and time from when the product is available.\n    \n- `availableUntil`: Date and time until when the product is available.\n    \n- `freePrice`: Indicates if the product allows for a flexible price.\n    \n- `hideWithoutVoucher`: Whether the product is hidden without a voucher.\n    \n- `requireVoucher`: Indicates if a voucher is required to purchase the product.\n    \n- `allowCancel`: Whether the product can be canceled.\n    \n- `maxPerOrder`: Maximum quantity per order.\n    \n- `minPerOrder`: Minimum quantity per order.\n    \n- `checkinAttention`: Indicates if special attention is required during check-in.\n    \n- `internalName`: Internal name used within the system.\n    \n- `originalPrice`: Original price before any discounts or promotions.\n    \n- `requireApproval`: Indicates if the product requires approval before purchase.\n    \n- `salesChannels`: Channels through which the product is sold (e.g., web, pos).\n    \n- `generateTickets`: Specifies if tickets should be generated for this product.\n    \n- `requireBundling`: Indicates if the product must be bundled with others.\n    \n- `showQuotaLeft`: Whether to show the remaining quota.\n    \n- `hiddenIfAvailableId`: Product ID that, if available, hides this product.\n    \n- `allowWaitinglist`: Whether a waiting list is allowed for the product.\n    \n- `issueGiftcard`: Specifies if purchasing this product issues a gift card.\n    \n- `grantMembershipDurationDays`: Number of days the product grants membership.\n    \n- `grantMembershipDurationLikeEvent`: Indicates if the membership duration is like the event.\n    \n- `grantMembershipDurationMonths`: Number of months the product grants membership.\n    \n- `requireMembership`: Indicates if a membership is required to purchase the product.\n    \n- `grantMembershipTypeId`: ID of the membership type granted.\n    \n- `requireMembershipHidden`: Whether the membership requirement is hidden.\n    \n- `personalized`: Specifies if the product is personalized.\n    \n- `validityDynamicDurationDays`: Number of days the product is valid.\n    \n- `validityDynamicDurationHours`: Number of hours the product is valid.\n    \n- `validityDynamicDurationMinutes`: Number of minutes the product is valid.\n    \n- `validityDynamicDurationMonths`: Number of months the product is valid.\n    \n- `validityDynamicStartChoice`: Whether the start date is chosen by the customer.\n    \n- `validityDynamicStartChoiceDayLimit`: Limit on the start date choice.\n    \n- `validityFixedFrom`: Fixed start date of the product's validity.\n    \n- `validityFixedUntil`: Fixed end date of the product's validity.\n    \n- `validityMode`: Mode of validity (e.g., dynamic, fixed).\n    \n- unit: identification of unit (event, store, park...). Using for get seat plan, make an order...\n    \n- `categoryId`: ID of the category the product belongs to.\n    \n- `taxRuleId`: ID of the tax rule applied to the product.\n    \n- `questions`: List of questions associated with the product.\n    \n- `variants`: List of variants of the product, such as different sizes or types.\n    \n\n### Question Object Description\n\n- `id`: Unique identifier for the question.\n    \n- `question`: The text of the question in multiple languages.\n    \n- `helpText`: Help text for the question.\n    \n- `type`: Type of the question (e.g., text, file).\n    \n- `required`: Indicates if the question is mandatory.\n    \n- `position`: The position of the question in the listing.\n    \n- `askDuringCheckin`: Whether the question is asked during check-in.\n    \n- `identifier`: Unique identifier for the question.\n    \n- `dependencyQuestionId`: ID of the question this one depends on.\n    \n- `dependencyValues`: Values that trigger the dependency.\n    \n- `hidden`: Indicates if the question is hidden.\n    \n- `printOnInvoice`: Whether the question is printed on the invoice.\n    \n- `validDateMax`: Maximum valid date for the question.\n    \n- `validDateMin`: Minimum valid date for the question.\n    \n- `validDatetimeMax`: Maximum valid date and time for the question.\n    \n- `validDatetimeMin`: Minimum valid date and time for the question.\n    \n- `validNumberMax`: Maximum valid number for the question.\n    \n- `validNumberMin`: Minimum valid number for the question.\n    \n- `validFilePortrait`: Specifies if the file should be in portrait orientation.\n    \n\n### Variant Object Description\n\n- `id`: Unique identifier for the variant.\n    \n- `value`: Value or name of the variant in multiple languages.\n    \n- `active`: Indicates if the variant is active.\n    \n- `position`: Position of the variant in the listing.\n    \n- `defaultPrice`: Default price of the variant.\n    \n- `originalPrice`: Original price before discounts or promotions.\n    \n- `description`: Description of the variant.\n    \n- `requireMembership`: Indicates if a membership is required to select this variant.\n    \n- `availableFrom`: Date and time from when the variant is available.\n    \n- `availableUntil`: Date and time until when the variant is available.\n    \n- `hideWithoutVoucher`: Whether the variant is hidden without a voucher.\n    \n- `salesChannels`: Channels through which the variant is sold.\n    \n- `requireMembershipHidden`: Whether the membership requirement is hidden.\n    \n- `requireApproval`: Indicates if the variant requires approval before selection.\n    \n- `checkinAttention`: Whether special attention is required during check-in.\n    \n- `itemId`: ID of the associated product."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "x-contact-id",
+                    "value": "FQvCoN6isFtPP4GwGOmkFxgHKFsTQGAx",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"limit\": 100,\r\n    \"skip\": 0\r\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/agency/api/list-products-v2",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "agency",
+                    "api",
+                    "list-products-v2"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "3706"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 31 Mar 2025 03:12:14 GMT"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "20250331.d478ddb2-8967-442c-89fe-b39bfaa19b40"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"units\": [\n        {\n            \"slug\": \"dam-sen-nuoc\",\n            \"seatingPlan\": null,\n            \"hasSubUnit\": false,\n            \"name\": \"Đầm Sen Nước\",\n            \"preview\": \"https://cdn.dev.nexbus.net/nexbus/dam-sen/77/medium_khu_du_lich_dam_sen_2_ebff19fdcc.webp\",\n            \"forntPageText\": \"\",\n            \"seatCategoryMapping\": [],\n            \"provider\": {\n                \"name\": \"Công ty cổ phần công viên nước Đầm Sen (DSN)\",\n                \"slug\": \"dam-sen\"\n            }\n        }\n    ],\n    \"products\": [\n        {\n            \"_meilisearch_id\": \"product-1091-en\",\n            \"id\": 1091,\n            \"category\": 1806,\n            \"internalName\": \"nguoi-lon-va-tre-em-tren-1m4-220\",\n            \"active\": true,\n            \"salesChannels\": [\n                \"spos\",\n                \"web\",\n                \"agency\"\n            ],\n            \"freePrice\": false,\n            \"taxRate\": 8,\n            \"taxRule\": 36,\n            \"admission\": true,\n            \"personalized\": false,\n            \"position\": 2,\n            \"availableFrom\": null,\n            \"availableUntil\": null,\n            \"requireVoucher\": false,\n            \"hideWithoutVoucher\": false,\n            \"allowCancel\": true,\n            \"requireBundling\": false,\n            \"minPerOrder\": null,\n            \"maxPerOrder\": null,\n            \"checkinAttention\": false,\n            \"hasVariations\": false,\n            \"addons\": [],\n            \"requireApproval\": false,\n            \"generateTickets\": null,\n            \"showQuotaLeft\": false,\n            \"hiddenIfAvailable\": null,\n            \"allowWaitinglist\": true,\n            \"issueGiftcard\": false,\n            \"requireMembership\": false,\n            \"requireMembershipTypes\": [],\n            \"requireMembershipHidden\": false,\n            \"grantMembershipType\": null,\n            \"grantMembershipDurationLikeEvent\": true,\n            \"grantMembershipDurationDays\": 0,\n            \"grantMembershipDurationMonths\": 0,\n            \"merchant\": \"dam-sen\",\n            \"locale\": \"en\",\n            \"name\": \"Trên 1m4 - Cổng chính 220\",\n            \"description\": \"<ul><li>Miễn vé vào cổng cho khách trên 60 tuổi - mang theo CMND và có người thân đi cùng</li></ul>\",\n            \"defaultPrice\": 220000,\n            \"originalPrice\": null,\n            \"variations\": [],\n            \"bundles\": [],\n            \"metaData\": {\n                \"ETICKET\": \"VEC195\"\n            },\n            \"preview\": \"https://cdn.dev.nexbus.net/nexbus/dam-sen/e6/medium_220_f6326942e9.jpg\",\n            \"availableFrom_timestamp\": null,\n            \"availableUntil_timestamp\": null,\n            \"validityMode\": \"dynamic\",\n            \"validityFixedFrom\": null,\n            \"validityFixedUntil\": null,\n            \"validityDynamicDurationMinutes\": null,\n            \"validityDynamicDurationHours\": null,\n            \"validityDynamicDurationDays\": 15,\n            \"validityDynamicDurationMonths\": null,\n            \"validityDynamicStartChoice\": false,\n            \"validityDynamicStartChoiceDayLimit\": null,\n            \"lastModified\": \"2025-03-31T02:51:20.096Z\",\n            \"lastModified_timestamp\": 1743389480.096,\n            \"unit\": \"dam-sen-nuoc\"\n        },\n        {\n            \"_meilisearch_id\": \"product-1092-en\",\n            \"id\": 1092,\n            \"category\": 1806,\n            \"internalName\": \"tre-em-duoi-1m4-180\",\n            \"active\": true,\n            \"salesChannels\": [\n                \"spos\",\n                \"web\",\n                \"agency\"\n            ],\n            \"freePrice\": false,\n            \"taxRate\": 8,\n            \"taxRule\": 36,\n            \"admission\": true,\n            \"personalized\": false,\n            \"position\": 3,\n            \"availableFrom\": null,\n            \"availableUntil\": null,\n            \"requireVoucher\": false,\n            \"hideWithoutVoucher\": false,\n            \"allowCancel\": true,\n            \"requireBundling\": false,\n            \"minPerOrder\": null,\n            \"maxPerOrder\": null,\n            \"checkinAttention\": false,\n            \"hasVariations\": false,\n            \"addons\": [],\n            \"requireApproval\": false,\n            \"generateTickets\": null,\n            \"showQuotaLeft\": false,\n            \"hiddenIfAvailable\": null,\n            \"allowWaitinglist\": true,\n            \"issueGiftcard\": false,\n            \"requireMembership\": false,\n            \"requireMembershipTypes\": [],\n            \"requireMembershipHidden\": false,\n            \"grantMembershipType\": null,\n            \"grantMembershipDurationLikeEvent\": true,\n            \"grantMembershipDurationDays\": 0,\n            \"grantMembershipDurationMonths\": 0,\n            \"merchant\": \"dam-sen\",\n            \"locale\": \"en\",\n            \"name\": \"Từ 0.8m – 1m4 - Cổng chính 180\",\n            \"description\": \"<ul><li>Miễn vé - Dưới 0.8m</li></ul>\\n\",\n            \"defaultPrice\": 180000,\n            \"originalPrice\": null,\n            \"variations\": [],\n            \"bundles\": [],\n            \"metaData\": {\n                \"ETICKET\": \"VEC155\"\n            },\n            \"preview\": \"https://cdn.dev.nexbus.net/nexbus/dam-sen/89/medium_180_e03f385d6c.jpg\",\n            \"availableFrom_timestamp\": null,\n            \"availableUntil_timestamp\": null,\n            \"validityMode\": \"dynamic\",\n            \"validityFixedFrom\": null,\n            \"validityFixedUntil\": null,\n            \"validityDynamicDurationMinutes\": null,\n            \"validityDynamicDurationHours\": null,\n            \"validityDynamicDurationDays\": 15,\n            \"validityDynamicDurationMonths\": null,\n            \"validityDynamicStartChoice\": false,\n            \"validityDynamicStartChoiceDayLimit\": null,\n            \"lastModified\": \"2025-03-31T02:52:31.572Z\",\n            \"lastModified_timestamp\": 1743389551.572,\n            \"unit\": \"dam-sen-nuoc\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Simulate Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"items\": [\r\n        {\r\n            \"productId\": 1091,\r\n            \"quantity\": 1,\r\n            \"answers\": [],\r\n            \"voucher\": \"GIAMGIA10\"\r\n        }\r\n    ],\r\n    \"metadata\": {\r\n        \"sales_channel\": \"agency\"\r\n    }\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agency/api/orders/simulate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "agency",
+                "api",
+                "orders",
+                "simulate"
+              ]
+            },
+            "description": "## This simulation calculates the price when placing an order based on the products.\n\n## _Note:_ Call this api to validate and caculate price order before to make a new order\n\n## Body\n\n``` json\n{\n    \"items\": [\n        {\n            \"productId\": 1091,\n            \"quantity\": 1,\n            \"answers\": [],\n            \"voucher\": \"GIAMGIA10\"\n        }\n    ],\n    \"metadata\": {\n        \"sales_channel\": \"agency\"\n    }\n}\n\n ```\n\n- `items`: List of all item\n    \n    - `productId`: Id of product (required)\n        \n    - `variantId`: If product has an variant (optional)\n        \n    - `quantity`: Number of items (required)\n        \n    - `answers`:\n        \n    - `voucher`: Voucher code (optional)\n        \n\n## Return data\n\n``` json\n{\n    \"success\": true,\n    \"orders\": [\n        {\n            \"code\": \"PREVIEW\",\n            \"status\": \"n\",\n            \"testmode\": false,\n            \"email\": null,\n            \"phone\": null,\n            \"locale\": \"en\",\n            \"datetime\": null,\n            \"expires\": \"2026-02-24T10:36:22.067998+07:00\",\n            \"payment_date\": null,\n            \"fees\": [],\n            \"total\": \"198000.00\",\n            \"comment\": \"\",\n            \"custom_followup_at\": null,\n            \"invoice_address\": null,\n            \"positions\": [\n                {\n                    \"id\": 0,\n                    \"order\": \"\",\n                    \"positionid\": 1,\n                    \"item\": 1091,\n                    \"variation\": null,\n                    \"price\": \"198000.00\",\n                    \"attendee_name\": null,\n                    \"attendee_name_parts\": {},\n                    \"company\": null,\n                    \"street\": null,\n                    \"zipcode\": null,\n                    \"city\": null,\n                    \"country\": null,\n                    \"state\": null,\n                    \"discount\": null,\n                    \"attendee_email\": null,\n                    \"voucher\": 923,\n                    \"tax_rate\": \"8.00\",\n                    \"tax_value\": \"14667.00\",\n                    \"secret\": \"\",\n                    \"addon_to\": null,\n                    \"subevent\": null,\n                    \"checkins\": [],\n                    \"downloads\": [],\n                    \"answers\": [],\n                    \"tax_rule\": 36,\n                    \"pseudonymization_id\": \"PREVIEW\",\n                    \"seat\": null,\n                    \"canceled\": false,\n                    \"voucher_budget_use\": \"22000.00\",\n                    \"valid_from\": \"2026-02-24T10:06:21.986476+07:00\",\n                    \"valid_until\": \"2026-03-10T23:59:59+07:00\",\n                    \"blocked\": null\n                }\n            ],\n            \"downloads\": [],\n            \"checkin_attention\": false,\n            \"last_modified\": \"2026-02-24T10:06:22.068124+07:00\",\n            \"refunds\": [],\n            \"require_approval\": false,\n            \"sales_channel\": \"agency\",\n            \"url\": \"https://nextix-nexbus.dev.nexpando.vn/dam-sen/dam-sen-nuoc/order/PREVIEW/58wecn9ymijjiq2j/\",\n            \"customer\": null,\n            \"meta_info\": \"{}\",\n            \"id\": null,\n            \"valid_if_pending\": false\n        }\n    ]\n}\n\n ```\n\n### **Response Description:**\n\n- **Response Description:**\n    \n    - `success`: Boolean indicating if the request was successful.\n        \n    - `orders`: List of orders returned by the API.\n        \n        - `code`: Unique order code.\n            \n        - `status`: Current status of the order.\n            \n        - `testmode`: Indicates if the order is in test mode.\n            \n        - `email`, `phone`: Contact details associated with the order (can be null).\n            \n        - `locale`: Locale of the order.\n            \n        - `datetime`: Date and time when the order was created.\n            \n        - `expires`: Expiration date and time of the order.\n            \n        - `payment_date`: Date and time when the payment was made (if applicable).\n            \n        - `fees`: Any applicable fees for the order.\n            \n        - `total`: Total amount of the order.\n            \n        - `comment`: Any additional comments related to the order.\n            \n        - `custom_followup_at`, `invoice_address`: Additional custom fields (can be null).\n            \n        - `positions`: List of positions/items in the order.\n            \n            - `id`: Position ID.\n                \n            - `order`: Associated order code.\n                \n            - `positionid`: Position ID within the order.\n                \n            - `item`, `variation`: Item ID and variation ID.\n                \n            - `price`: Price of the item.\n                \n            - `attendee_name`, `attendee_name_parts`: Attendee details (can be null).\n                \n            - `company`, `street`, `zipcode`, `city`, `country`, `state`: Address details (can be null).\n                \n            - `discount`: Discount applied to the item (if any).\n                \n            - `attendee_email`: Email of the attendee (can be null).\n                \n            - `voucher`: Voucher code applied (if any).\n                \n            - `tax_rate`, `tax_value`: Tax rate and value applied.\n                \n            - `secret`: Secret key for the position.\n                \n            - `addon_to`: Indicates if the position is an add-on (can be null).\n                \n            - `subevent`: Associated subevent (can be null).\n                \n            - `checkins`: List of check-ins for the position.\n                \n            - `downloads`: List of downloadable items related to the position.\n                \n            - `answers`: Any answers provided by the attendee (if applicable).\n                \n            - `tax_rule`: Tax rule applied (can be null).\n                \n            - `pseudonymization_id`: Pseudonymization ID for GDPR compliance.\n                \n            - `seat`: Seat assigned (can be null).\n                \n            - `canceled`: Indicates if the position has been canceled.\n                \n            - `voucher_budget_use`: Voucher budget usage (if any).\n                \n            - `valid_from`, `valid_until`: Validity period for the position.\n                \n            - `blocked`: Indicates if the position is blocked.\n                \n        - `downloads`: List of downloadable items for the order.\n            \n        - `checkin_attention`: Flag for check-in attention.\n            \n        - `last_modified`: Last modification date and time for the order.\n            \n        - `refunds`: List of refunds associated with the order (if any).\n            \n        - `require_approval`: Indicates if the order requires approval.\n            \n        - `sales_channel`: Sales channel used for the order.\n            \n        - `url`: URL to view the order details.\n            \n        - `customer`: Customer details (can be null).\n            \n        - `meta_info`: Additional metadata (can be null).\n            \n        - `id`: Unique identifier for the order.\n            \n        - `valid_if_pending`: Indicates if the order is valid while pending."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"items\": [\r\n        {\r\n            \"productId\": 1091,\r\n            \"quantity\": 1,\r\n            \"answers\": [],\r\n            \"voucher\": \"GIAMGIA10\"\r\n        }\r\n    ],\r\n    \"metadata\": {\r\n        \"sales_channel\": \"agency\"\r\n    }\r\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/agency/api/orders/simulate",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "agency",
+                    "api",
+                    "orders",
+                    "simulate"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1230"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 24 Feb 2026 03:06:22 GMT"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "20260224.fa780637-0d4e-402f-9b34-e6d505ce28fb"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"orders\": [\n        {\n            \"code\": \"PREVIEW\",\n            \"status\": \"n\",\n            \"testmode\": false,\n            \"email\": null,\n            \"phone\": null,\n            \"locale\": \"en\",\n            \"datetime\": null,\n            \"expires\": \"2026-02-24T10:36:22.067998+07:00\",\n            \"payment_date\": null,\n            \"fees\": [],\n            \"total\": \"198000.00\",\n            \"comment\": \"\",\n            \"custom_followup_at\": null,\n            \"invoice_address\": null,\n            \"positions\": [\n                {\n                    \"id\": 0,\n                    \"order\": \"\",\n                    \"positionid\": 1,\n                    \"item\": 1091,\n                    \"variation\": null,\n                    \"price\": \"198000.00\",\n                    \"attendee_name\": null,\n                    \"attendee_name_parts\": {},\n                    \"company\": null,\n                    \"street\": null,\n                    \"zipcode\": null,\n                    \"city\": null,\n                    \"country\": null,\n                    \"state\": null,\n                    \"discount\": null,\n                    \"attendee_email\": null,\n                    \"voucher\": 923,\n                    \"tax_rate\": \"8.00\",\n                    \"tax_value\": \"14667.00\",\n                    \"secret\": \"\",\n                    \"addon_to\": null,\n                    \"subevent\": null,\n                    \"checkins\": [],\n                    \"downloads\": [],\n                    \"answers\": [],\n                    \"tax_rule\": 36,\n                    \"pseudonymization_id\": \"PREVIEW\",\n                    \"seat\": null,\n                    \"canceled\": false,\n                    \"voucher_budget_use\": \"22000.00\",\n                    \"valid_from\": \"2026-02-24T10:06:21.986476+07:00\",\n                    \"valid_until\": \"2026-03-10T23:59:59+07:00\",\n                    \"blocked\": null\n                }\n            ],\n            \"downloads\": [],\n            \"checkin_attention\": false,\n            \"last_modified\": \"2026-02-24T10:06:22.068124+07:00\",\n            \"refunds\": [],\n            \"require_approval\": false,\n            \"sales_channel\": \"agency\",\n            \"url\": \"https://nextix-nexbus.dev.nexpando.vn/dam-sen/dam-sen-nuoc/order/PREVIEW/58wecn9ymijjiq2j/\",\n            \"customer\": null,\n            \"meta_info\": \"{}\",\n            \"id\": null,\n            \"valid_if_pending\": false\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"items\": [\r\n        {\r\n            \"productId\": 1091,\r\n            \"quantity\": 1,\r\n            \"answers\": [],\r\n            \"voucher\": \"GIAMGIA10\"\r\n        }\r\n    ],\r\n    \"email\": \"dev@test.vn\",\r\n    \"phone\": \"+84988989898\",\r\n    \"metadata\": {\r\n        \"sales_channel\": \"agency\"\r\n    }\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agency/api/create-order",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "agency",
+                "api",
+                "create-order"
+              ]
+            },
+            "description": "# Make an order base on products\n\n## Body\n\n``` json\n{\n    \"items\": [\n        {\n            \"productId\": 2813,\n            \"quantity\": 1,\n            \"answers\": []\n        }\n    ]\n}\n\n ```\n\n- `items`: List of all item\n    \n    - `productId`: Id of product (required)\n        \n    - `variantId`: If product has an variant (optional)\n        \n    - `quantity`: Number of items (required)\n        \n    - `answers`:\n        \n    - `voucher`: Voucher code (optional)\n        \n- `email`: Email of customer\n    \n- `phone`: Phone of customer\n    \n- `metadata`:\n    \n    - `sales_channel`: Sale channel\n        \n\n## Return data\n\n``` json\n{\n    \"success\": true,\n    \"code\": \"kreeusZ5v8AMxrfuCWBrq4\",\n    \"orders\": [\n        {\n            \"code\": \"F2TBA\",\n            \"status\": \"n\",\n            \"testmode\": false,\n            \"email\": null,\n            \"phone\": null,\n            \"locale\": \"en\",\n            \"datetime\": \"2024-10-25T16:28:03.434845+07:00\",\n            \"expires\": \"2024-10-25T16:58:03.434707+07:00\",\n            \"payment_date\": null,\n            \"fees\": [],\n            \"total\": \"300000.00\",\n            \"comment\": \"\",\n            \"custom_followup_at\": null,\n            \"invoice_address\": null,\n            \"positions\": [\n                {\n                    \"id\": 63592,\n                    \"order\": \"F2TBA\",\n                    \"positionid\": 1,\n                    \"item\": 2813,\n                    \"variation\": null,\n                    \"price\": \"300000.00\",\n                    \"attendee_name\": null,\n                    \"attendee_name_parts\": {},\n                    \"company\": null,\n                    \"street\": null,\n                    \"zipcode\": null,\n                    \"city\": null,\n                    \"country\": null,\n                    \"state\": null,\n                    \"discount\": null,\n                    \"attendee_email\": null,\n                    \"voucher\": null,\n                    \"tax_rate\": \"8.00\",\n                    \"tax_value\": \"22222.00\",\n                    \"secret\": \"8kzfq35yqwy5vz9jk64y77tuu5mtjx5q\",\n                    \"addon_to\": null,\n                    \"subevent\": null,\n                    \"checkins\": [],\n                    \"downloads\": [\n                        {\n                            \"output\": \"pdf\",\n                            \"url\": \"http://pt.dev.nexbus.net/api/v1/organizers/dam-sen/events/ve-vao-cua/orderpositions/63592/download/pdf/\"\n                        }\n                    ],\n                    \"answers\": [],\n                    \"tax_rule\": 110,\n                    \"pseudonymization_id\": \"BDRT8NHJNY\",\n                    \"seat\": null,\n                    \"canceled\": false,\n                    \"voucher_budget_use\": null,\n                    \"valid_from\": null,\n                    \"valid_until\": null,\n                    \"blocked\": null\n                }\n            ],\n            \"downloads\": [\n                {\n                    \"output\": \"pdf\",\n                    \"url\": \"http://pt.dev.nexbus.net/api/v1/organizers/dam-sen/events/ve-vao-cua/orders/F2TBA/download/pdf/\"\n                }\n            ],\n            \"checkin_attention\": false,\n            \"last_modified\": \"2024-10-25T16:28:03.523883+07:00\",\n            \"refunds\": [],\n            \"require_approval\": false,\n            \"sales_channel\": \"web\",\n            \"url\": \"https://pt.dev.nexbus.net/dam-sen/ve-vao-cua/order/F2TBA/49er7uu31li4wyfb/\",\n            \"customer\": null,\n            \"meta_info\": {},\n            \"id\": 18341,\n            \"valid_if_pending\": false\n        }\n    ]\n}\n\n ```\n\n### **Response Description:**\n\n- `success`: Boolean indicating if the request was successful.\n    \n- `code`: Unique code representing the API response.\n    \n- `orders`: List of orders returned by the API.\n    \n    - `code`: Unique order code.\n        \n    - `status`: Current status of the order.\n        \n    - `testmode`: Indicates if the order is in test mode.\n        \n    - `secret`: Secret key for the order.\n        \n    - `email`, `phone`: Contact details associated with the order (can be null).\n        \n    - `locale`: Locale of the order.\n        \n    - `datetime`: Date and time when the order was created.\n        \n    - `expires`: Expiration date and time of the order.\n        \n    - `payment_date`: Date and time when the payment was made (if applicable).\n        \n    - `payment_provider`: Payment provider used for the order.\n        \n    - `fees`: Any applicable fees for the order.\n        \n    - `total`: Total amount of the order.\n        \n    - `comment`: Any additional comments related to the order.\n        \n    - `custom_followup_at`, `invoice_address`: Additional custom fields (can be null).\n        \n    - `positions`: List of positions/items in the order.\n        \n        - `id`: Position ID.\n            \n        - `order`: Associated order code.\n            \n        - `positionid`: Position ID within the order.\n            \n        - `item`, `variation`: Item ID and variation ID.\n            \n        - `price`: Price of the item.\n            \n        - `attendee_name`, `attendee_name_parts`: Attendee details (can be null).\n            \n        - `company`, `street`, `zipcode`, `city`, `country`, `state`: Address details (can be null).\n            \n        - `discount`: Discount applied to the item (if any).\n            \n        - `attendee_email`: Email of the attendee (can be null).\n            \n        - `voucher`: Voucher code applied (if any).\n            \n        - `tax_rate`, `tax_value`: Tax rate and value applied.\n            \n        - `secret`: Secret key for the position.\n            \n        - `addon_to`: Indicates if the position is an add-on (can be null).\n            \n        - `subevent`: Associated subevent (can be null).\n            \n        - `checkins`: List of check-ins for the position.\n            \n        - `downloads`: List of downloadable items related to the position.\n            \n        - `answers`: Any answers provided by the attendee (if applicable).\n            \n        - `tax_rule`: Tax rule applied (can be null).\n            \n        - `pseudonymization_id`: Pseudonymization ID for GDPR compliance.\n            \n        - `seat`: Seat assigned (can be null).\n            \n        - `canceled`: Indicates if the position has been canceled.\n            \n        - `voucher_budget_use`: Voucher budget usage (if any).\n            \n        - `valid_from`, `valid_until`: Validity period for the position.\n            \n        - `blocked`: Indicates if the position is blocked.\n            \n    - `downloads`: List of downloadable items for the order.\n        \n    - `checkin_attention`: Flag for check-in attention.\n        \n    - `last_modified`: Last modification date and time for the order.\n        \n    - `payments`: List of payment records for the order.\n        \n        - `local_id`: Local ID for the payment.\n            \n        - `state`: Current state of the payment.\n            \n        - `amount`: Payment amount.\n            \n        - `created`: Date and time when the payment was created.\n            \n        - `payment_date`: Date and time when the payment was completed (if applicable).\n            \n        - `provider`: Payment provider used.\n            \n        - `payment_url`: URL for making the payment.\n            \n        - `details`: Additional payment details (if any).\n            \n    - `refunds`: List of refunds associated with the order (if any).\n        \n    - `require_approval`: Indicates if the order requires approval.\n        \n    - `sales_channel`: Sales channel used for the order.\n        \n    - `url`: URL to view the order details.\n        \n    - `customer`: Customer details (can be null).\n        \n    - `meta_info`: Additional metadata (can be null).\n        \n    - `id`: Unique identifier for the order.\n        \n    - `valid_if_pending`: Indicates if the order is valid while pending."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n\t\"items\": [\r\n\t\t{\r\n\t\t\t\"productId\": 1092,\r\n\t\t\t\"quantity\": 1,\r\n\t\t\t\"answers\": []\r\n\t\t}\r\n\t],\r\n    \"email\": \"dev@test.vn\",\r\n    \"phone\": \"+84988989898\",\r\n     \"metadata\": {\r\n        \"sales_channel\": \"agency\"\r\n    }\r\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/agency/api/create-order",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "agency",
+                    "api",
+                    "create-order"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1353"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 30 Jan 2026 08:35:13 GMT"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "20260130.f9969a27-75cf-4bb4-a865-840ca2f30289"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"code\": \"k1MUy\",\n    \"orders\": [\n        {\n            \"code\": \"C2RJD\",\n            \"status\": \"n\",\n            \"testmode\": false,\n            \"email\": \"dev@test.vn\",\n            \"phone\": \"+84988989898\",\n            \"locale\": \"en\",\n            \"datetime\": \"2026-01-30T15:35:12.606996+07:00\",\n            \"expires\": \"2026-01-30T16:05:12.606827+07:00\",\n            \"payment_date\": null,\n            \"fees\": [],\n            \"total\": \"180000.00\",\n            \"comment\": \"\",\n            \"custom_followup_at\": null,\n            \"invoice_address\": null,\n            \"positions\": [\n                {\n                    \"id\": 240136,\n                    \"order\": \"C2RJD\",\n                    \"positionid\": 1,\n                    \"item\": 1092,\n                    \"variation\": null,\n                    \"price\": \"180000.00\",\n                    \"attendee_name\": null,\n                    \"attendee_name_parts\": {},\n                    \"company\": null,\n                    \"street\": null,\n                    \"zipcode\": null,\n                    \"city\": null,\n                    \"country\": null,\n                    \"state\": null,\n                    \"discount\": null,\n                    \"attendee_email\": null,\n                    \"voucher\": null,\n                    \"tax_rate\": \"8.00\",\n                    \"tax_value\": \"13333.00\",\n                    \"secret\": \"hn22sfgapvaxfdt4jf3vxap9zjn248tg\",\n                    \"addon_to\": null,\n                    \"subevent\": null,\n                    \"checkins\": [],\n                    \"downloads\": [],\n                    \"answers\": [],\n                    \"tax_rule\": 36,\n                    \"pseudonymization_id\": \"WRJKUD3RSC\",\n                    \"seat\": null,\n                    \"canceled\": false,\n                    \"voucher_budget_use\": null,\n                    \"valid_from\": \"2026-01-30T15:35:12.541834+07:00\",\n                    \"valid_until\": \"2026-02-13T23:59:59+07:00\",\n                    \"blocked\": null\n                }\n            ],\n            \"downloads\": [],\n            \"checkin_attention\": false,\n            \"last_modified\": \"2026-01-30T15:35:12.642621+07:00\",\n            \"refunds\": [],\n            \"require_approval\": false,\n            \"sales_channel\": \"agency\",\n            \"url\": \"https://nextix-nexbus.dev.nexpando.vn/dam-sen/dam-sen-nuoc/order/C2RJD/o6y7gforwbc8idij/\",\n            \"customer\": null,\n            \"meta_info\": {\n                \"sales_channel\": \"agency\"\n            },\n            \"id\": 36598,\n            \"valid_if_pending\": false\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Payment request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"code\": \"3hpC3\",\r\n  \"amount\": 180000,\r\n  \"provider\": \"vnpay_mms_qrcode\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agency/api/payment-request?output=image",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "agency",
+                "api",
+                "payment-request"
+              ],
+              "query": [
+                {
+                  "key": "output",
+                  "value": "image"
+                }
+              ]
+            },
+            "description": "# Get QR payment\n\n## **Params**\n\n- `output` — Return information as an image or JSON. Value is image or text (default is text)\n    \n\n## Body\n\n``` json\n{\n  \"code\": \"fTLNH\",\n  \"amount\": 180000,\n  \"provider\": \"vnpay_mms_qrcode\"\n}\n\n ```\n\n- `code` — Order code return from create order:\n    \n- `amount` — Payment amount, return Error If amount don't match order total\n    \n- `provider` — Payment provider (vnpay_mms_qrcode)\n    \n\n## Return data\n\n``` json\n{\n    \"code\": \"00\",\n    \"message\": \"Success\",\n    \"orderCode\": \"fTLNH\",\n    \"amount\": 180000,\n    \"paymentId\": 1234,\n    \"qrContent\": \"00020101021226260010A00000077501088888888852049999530370454061000005802VN5910VNPAY TEST6005HANOI62330111VNP_TEST8880303PSS0707PSSTEST63046DF7\",\n    \"url\": null\n}\n\n ```\n\n### **Response Description:**\n\n#### **Data response with output = text**\n\n- `code`: Error code.\n    \n- `message`: Error message.\n    \n- `orderCode`: Unique order code when create order.\n    \n- `amount`: Amount to be paid\n    \n- `paymentId`: id of payment\n    \n- `qrContent`: QR content string used to generate the payment QR code\n    \n- `url`: url trả về, default: null\n    \n\n#### **Data response with output = image will return a PNG image.**"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"code\": \"fTLNH\",\r\n  \"amount\": 180000,\r\n  \"provider\": \"vnpay_mms_qrcode\"\r\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/agency/api/payment-request",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "agency",
+                    "api",
+                    "payment-request"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "253"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 30 Jan 2026 04:23:41 GMT"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "20260130.b3341ba6-fb48-4ba3-81eb-e1229a28f128"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"code\": \"00\",\n    \"message\": \"Success\",\n    \"orderCode\": \"fTLNH\",\n    \"amount\": 180000,\n    \"paymentId\": 1234,\n    \"qrContent\": \"00020101021226260010A00000077501088888888852049999530370454061000005802VN5910VNPAY TEST6005HANOI62330111VNP_TEST8880303PSS0707PSSTEST63046DF7\",\n    \"url\": null\n}"
+            }
+          ]
+        }
+      ],
+      "description": "### 🚀 Agency Purchase API\n\n### 1\\. General Information\n\n- `api_key`: The API key provided by Nexpando for the agency.\n    \n- `secret_key`: The secret key provided by Nexpando for the agency.\n    \n- `base_url`\n    \n    - Test environment\n        \n- These values are defined in environment variables for the respective Environments.\n    \n- `provider`: Provider\n    \n- `unit`: Park\n    \n\n### 2\\. Structure of a Typical Request\n\n**Method:** `POST`\n\n**Headers:**\n\n- `x-api-key`: `api_key`\n    \n- `x-verify-key`: The HMAC-SHA512 value generated from the JSON body of the request, using `secret_key`. This value is converted to hex.\n    \n- `Content-Type`: `application/json`\n    \n\n**How to create** **`x-verify-key =`** `HMAC-SHA512(JSON.stringify(body), secret_key)`\n\n- Convert the JSON body of the request to a string using `JSON.stringify`.\n    \n- Apply the HMAC-SHA512 algorithm to this string, using `secret_key` as the key.\n    \n- Convert the result to hex and set it in the `x-verify-key` header.\n    \n- Example code for generating `x-verify-key` can be found under `Agency / Scripts / Pre-request`.",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Lấy body dưới dạng chuỗi JSON",
+              "if (pm.request.method.toLowerCase() != 'get') {",
+              "    const body = JSON.stringify(JSON.parse(pm.request.body));",
+              "",
+              "    // Mã hóa với HMAC SHA-512 và private key 'abc'",
+              "    const privateKey = pm.collectionVariables.get('secret_key')",
+              "    console.log('privateKey', privateKey)",
+              "    const hash = CryptoJS.HmacSHA512(body, privateKey).toString(CryptoJS.enc.Hex);",
+              "",
+              "    console.log(pm.request.headers, hash)",
+              "",
+              "    // Đưa giá trị hash vào headers",
+              "    pm.request.headers.add({",
+              "        key: 'x-verify-key',",
+              "        value: hash",
+              "    });",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "x-api-key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{api_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "secret_key",
+      "value": ""
+    },
+    {
+      "key": "api_token",
+      "value": ""
+    },
+    {
+      "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "unit_slug",
+      "value": ""
+    }
+  ]
+}

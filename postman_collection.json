@@ -1,6 +1,7 @@
 {
   "info": {
     "name": "Payload-Astro API",
+    "description": "# Payload-Astro API\n\nHệ thống multi-tenant xây dựng bằng **Payload CMS v3** (backend) và **Astro** (frontend).\n\nMỗi tenant là một đơn vị kinh doanh độc lập (VD: VinWonders, Phương Trang) với dữ liệu riêng biệt gồm pages, tickets, orders và site settings.\n\n## Cách sử dụng\n\n1. Gọi `Auth > Login` để lấy JWT token\n2. Copy giá trị `token` từ response\n3. Set biến `token` trong Environment\n4. Tất cả request có auth sẽ tự động dùng token này\n\n## Biến môi trường\n\n- `base_url`: `http://localhost:3000` — URL của backend Payload\n- `token`: JWT token sau khi login\n\n## Tài khoản mặc định (sau khi seed)\n\n| Email | Password | Role |\n|-------|----------|------|\n| admin@example.com | admin123 | super-admin |\n| vinwonders@example.com | admin123 | tenant-admin (VinWonders) |\n| phuongtrang@example.com | admin123 | tenant-admin (Phương Trang) |",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -10,6 +11,7 @@
   "item": [
     {
       "name": "Auth",
+      "description": "Xác thực người dùng qua JWT token. Sau khi login thành công, copy giá trị `token` từ response và set vào biến Environment `token` để các request khác tự động xác thực.",
       "item": [
         {
           "name": "Login",
@@ -20,29 +22,82 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "description": "# Đăng nhập\n\nXác thực người dùng và trả về JWT token. Token này cần được dùng trong header `Authorization: JWT <token>` cho các request yêu cầu xác thực.\n\n## Body\n\n- `email` _(bắt buộc)_: Địa chỉ email của tài khoản\n- `password` _(bắt buộc)_: Mật khẩu tài khoản\n\n## Response\n\n```json\n{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"exp\": 1740007200,\n  \"user\": { ... }\n}\n```\n\n### Mô tả Response\n\n- `token`: JWT token dùng để xác thực các request tiếp theo — copy và set vào biến `token`\n- `exp`: Thời điểm token hết hạn (Unix timestamp)\n- `user.id`: ID của user\n- `user.email`: Email của user\n- `user.roles`: Danh sách role — `super-admin` hoặc `user`\n- `user.tenants`: Danh sách tenants mà user được quản lý (nếu là tenant-admin)"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": "{{base_url}}/api/users/login",
+                "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}" }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQwMDAwMDAwLCJleHAiOjE3NDAwMDcyMDB9.abc123\",\n  \"exp\": 1740007200,\n  \"user\": {\n    \"id\": 1,\n    \"email\": \"admin@example.com\",\n    \"roles\": [\"super-admin\"],\n    \"tenants\": [],\n    \"createdAt\": \"2026-03-04T09:33:14.000Z\",\n    \"updatedAt\": \"2026-03-04T09:33:14.000Z\"\n  }\n}"
             }
-          }
+          ]
         },
         {
           "name": "Logout",
           "request": {
             "method": "POST",
             "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
-            "url": "{{base_url}}/api/users/logout"
-          }
+            "url": "{{base_url}}/api/users/logout",
+            "description": "# Đăng xuất\n\nVô hiệu hóa session hiện tại. Sau khi logout, token sẽ không còn hợp lệ.\n\n## Headers\n\n- `Authorization` _(bắt buộc)_: `JWT <token>`"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+                "url": "{{base_url}}/api/users/logout"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"message\": \"You have been logged out successfully.\"\n}"
+            }
+          ]
         },
         {
           "name": "Me",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
-            "url": "{{base_url}}/api/users/me"
-          }
+            "url": "{{base_url}}/api/users/me",
+            "description": "# Thông tin user hiện tại\n\nTrả về thông tin của user đang đăng nhập.\n\n## Headers\n\n- `Authorization` _(bắt buộc)_: `JWT <token>`\n\n## Response\n\n### Mô tả Response\n\n- `user.id`: ID của user\n- `user.email`: Email đăng nhập\n- `user.roles`: Role toàn hệ thống — `super-admin` có quyền quản lý mọi thứ, `user` chỉ quản lý tenant được giao\n- `user.tenants`: Danh sách tenant được giao\n  - `tenant`: Thông tin tenant (id, name, slug)\n  - `roles`: Role trong tenant đó (`admin`)"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+                "url": "{{base_url}}/api/users/me"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"user\": {\n    \"id\": 2,\n    \"email\": \"vinwonders@example.com\",\n    \"roles\": [\"user\"],\n    \"tenants\": [\n      {\n        \"tenant\": { \"id\": 1, \"name\": \"VinWonders\", \"slug\": \"funpark\" },\n        \"roles\": [\"admin\"]\n      }\n    ],\n    \"createdAt\": \"2026-03-04T09:33:14.000Z\",\n    \"updatedAt\": \"2026-03-04T09:33:14.000Z\"\n  }\n}"
+            }
+          ]
         }
       ]
     },
     {
       "name": "Tenants",
+      "description": "Quản lý các tenant (đơn vị kinh doanh) trong hệ thống. Mỗi tenant có domain riêng để frontend nhận diện và hiển thị đúng giao diện.\n\n## Phân quyền\n\n| Thao tác | Yêu cầu |\n|----------|--------|\n| GET | Không cần login (public) |\n| POST | Phải login, chỉ super-admin |\n| PATCH | Phải login, super-admin hoặc admin của tenant đó |\n| DELETE | Phải login, super-admin hoặc admin của tenant đó |",
       "item": [
         {
           "name": "Get all",
@@ -53,21 +108,48 @@
               "host": ["{{base_url}}"],
               "path": ["api", "tenants"],
               "query": [
-                { "key": "where[domain][equals]", "value": "vinwonders.local", "disabled": true },
-                { "key": "where[slug][equals]", "value": "funpark", "disabled": true },
-                { "key": "where[public][equals]", "value": "true", "disabled": true },
-                { "key": "limit", "value": "10", "disabled": true }
+                { "key": "where[domain][equals]", "value": "vinwonders.local", "disabled": true, "description": "Lọc theo custom domain, VD: vinwonders.local" },
+                { "key": "where[slug][equals]", "value": "funpark", "disabled": true, "description": "Lọc theo slug của tenant, VD: funpark, busline" },
+                { "key": "where[public][equals]", "value": "true", "disabled": true, "description": "Lọc tenant công khai: true hoặc false" },
+                { "key": "limit", "value": "10", "disabled": true, "description": "Số kết quả tối đa trên một trang. Mặc định: 10" },
+                { "key": "page", "value": "1", "disabled": true, "description": "Trang hiện tại. Mặc định: 1" }
               ]
+            },
+            "description": "# Lấy danh sách tenants\n\nTrả về danh sách tất cả tenants. Không yêu cầu xác thực.\n\n## Query Params\n\n- `where[domain][equals]` _(tùy chọn)_: Lọc theo custom domain, VD: `vinwonders.local`\n- `where[slug][equals]` _(tùy chọn)_: Lọc theo slug, VD: `funpark`\n- `where[public][equals]` _(tùy chọn)_: Lọc theo trạng thái công khai: `true` / `false`\n- `limit` _(tùy chọn)_: Số kết quả tối đa mỗi trang. Mặc định: `10`\n- `page` _(tùy chọn)_: Trang cần lấy. Mặc định: `1`\n\n## Response\n\n### Mô tả Response\n\n- `docs`: Mảng danh sách tenants\n- `totalDocs`: Tổng số tenants tìm được\n- `limit` / `page` / `totalPages`: Thông tin phân trang\n- `hasNextPage` / `hasPrevPage`: Có trang tiếp/trước không\n\n### Mô tả từng Tenant\n\n- `id`: ID số nguyên của tenant\n- `name`: Tên hiển thị của tenant\n- `slug`: Đường dẫn URL, VD: `funpark` → `/funpark/...`\n- `domain`: Custom domain, VD: `vinwonders.local`\n- `public`: Có thể xem mà không cần đăng nhập\n- `contact.phone`: Số điện thoại liên hệ\n- `contact.email`: Email liên hệ\n- `contact.address`: Địa chỉ\n- `images`: Danh sách ảnh quảng cáo (relationship tới Media)"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": { "method": "GET", "url": "{{base_url}}/api/tenants" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"docs\": [\n    {\n      \"id\": 1,\n      \"name\": \"VinWonders\",\n      \"slug\": \"funpark\",\n      \"domain\": \"vinwonders.local\",\n      \"public\": true,\n      \"contact\": {\n        \"phone\": \"0901 111 123\",\n        \"email\": \"hello@vinwonders.local\",\n        \"address\": \"VinWonders, Nha Trang, Khánh Hòa\"\n      },\n      \"images\": [],\n      \"updatedAt\": \"2026-03-04T14:54:59.072Z\",\n      \"createdAt\": \"2026-03-04T09:33:14.233Z\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Phương Trang\",\n      \"slug\": \"busline\",\n      \"domain\": \"phuongtrang.local\",\n      \"public\": true,\n      \"contact\": {\n        \"phone\": \"1900 6067\",\n        \"email\": \"support@phuongtrang.local\",\n        \"address\": \"Bến xe Miền Tây, TP. Hồ Chí Minh\"\n      },\n      \"images\": [],\n      \"updatedAt\": \"2026-03-04T15:59:22.499Z\",\n      \"createdAt\": \"2026-03-04T09:33:14.246Z\"\n    }\n  ],\n  \"totalDocs\": 2,\n  \"limit\": 10,\n  \"page\": 1,\n  \"totalPages\": 1,\n  \"hasNextPage\": false,\n  \"hasPrevPage\": false\n}"
             }
-          }
+          ]
         },
         {
           "name": "Get by ID",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/tenants/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1", "description": "ID số nguyên của tenant" }],
+            "description": "# Lấy thông tin tenant theo ID\n\nTrả về thông tin chi tiết của một tenant kèm danh sách ảnh. Không yêu cầu xác thực.\n\n## Path Params\n\n- `id` _(bắt buộc)_: ID số nguyên của tenant, VD: `1`, `2`"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": { "method": "GET", "url": "{{base_url}}/api/tenants/1" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"VinWonders\",\n  \"slug\": \"funpark\",\n  \"domain\": \"vinwonders.local\",\n  \"public\": true,\n  \"contact\": {\n    \"phone\": \"0901 111 123\",\n    \"email\": \"hello@vinwonders.local\",\n    \"address\": \"VinWonders, Nha Trang, Khánh Hòa\"\n  },\n  \"images\": [\n    {\n      \"id\": 1,\n      \"url\": \"http://localhost:3000/api/media/file/VinWonders-1-1741234567890.jpg\",\n      \"alt\": \"VinWonders banner\",\n      \"filename\": \"VinWonders-1-1741234567890.jpg\",\n      \"mimeType\": \"image/jpeg\",\n      \"filesize\": 204800\n    }\n  ],\n  \"updatedAt\": \"2026-03-04T14:54:59.072Z\",\n  \"createdAt\": \"2026-03-04T09:33:14.233Z\"\n}"
+            }
+          ]
         },
         {
           "name": "Create",
@@ -80,9 +162,27 @@
             "url": "{{base_url}}/api/tenants",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Tenant Name\",\n  \"slug\": \"tenant-slug\",\n  \"domain\": \"tenant.local\",\n  \"public\": true,\n  \"contact\": {\n    \"phone\": \"0900000000\",\n    \"email\": \"contact@tenant.local\",\n    \"address\": \"Địa chỉ\"\n  }\n}"
+              "raw": "{\n  \"name\": \"Tên Tenant\",\n  \"slug\": \"tenant-slug\",\n  \"domain\": \"tenant.local\",\n  \"public\": true,\n  \"contact\": {\n    \"phone\": \"0900000000\",\n    \"email\": \"contact@tenant.local\",\n    \"address\": \"Địa chỉ tenant\"\n  }\n}"
+            },
+            "description": "# Tạo tenant mới\n\nYêu cầu quyền **super-admin**.\n\n## Headers\n\n- `Authorization` _(bắt buộc)_: `JWT <token>`\n\n## Body\n\n- `name` _(bắt buộc)_: Tên hiển thị của tenant\n- `slug` _(bắt buộc)_: Đường dẫn URL — chỉ dùng ký tự thường và dấu `-`, VD: `funpark`, `bus-line`\n- `domain` _(tùy chọn)_: Custom domain trỏ đến tenant này, VD: `vinwonders.local`\n- `public` _(tùy chọn)_: `true` = ai cũng xem được, `false` = phải đăng nhập. Mặc định: `false`\n- `contact.phone` _(tùy chọn)_: Số điện thoại liên hệ\n- `contact.email` _(tùy chọn)_: Email liên hệ\n- `contact.address` _(tùy chọn)_: Địa chỉ"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
+                "url": "{{base_url}}/api/tenants",
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Tên Tenant\",\n  \"slug\": \"tenant-slug\",\n  \"domain\": \"tenant.local\",\n  \"public\": true\n}" }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"doc\": {\n    \"id\": 3,\n    \"name\": \"Tên Tenant\",\n    \"slug\": \"tenant-slug\",\n    \"domain\": \"tenant.local\",\n    \"public\": true,\n    \"contact\": { \"phone\": \"0900000000\", \"email\": \"contact@tenant.local\", \"address\": \"Địa chỉ tenant\" },\n    \"images\": [],\n    \"updatedAt\": \"2026-03-05T08:00:00.000Z\",\n    \"createdAt\": \"2026-03-05T08:00:00.000Z\"\n  },\n  \"message\": \"Tenants successfully created.\"\n}"
             }
-          }
+          ]
         },
         {
           "name": "Update",
@@ -93,12 +193,27 @@
               { "key": "Authorization", "value": "JWT {{token}}" }
             ],
             "url": "{{base_url}}/api/tenants/:id",
-            "variable": [{ "key": "id", "value": "" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Updated Name\"\n}"
+            "variable": [{ "key": "id", "value": "1" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Tên mới\"\n}" },
+            "description": "# Cập nhật tenant\n\nChỉ cần gửi các field muốn thay đổi (partial update).\n\n## Path Params\n\n- `id` _(bắt buộc)_: ID số nguyên của tenant\n\n## Body (các field có thể cập nhật)\n\n- `name`: Tên mới\n- `domain`: Domain mới\n- `public`: Thay đổi trạng thái công khai\n- `contact`: Thông tin liên hệ mới\n- `images`: Mảng ID media (ảnh quảng cáo)"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
+                "url": "{{base_url}}/api/tenants/1",
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Tên mới\"\n}" }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"doc\": {\n    \"id\": 1,\n    \"name\": \"Tên mới\",\n    \"slug\": \"funpark\",\n    \"domain\": \"vinwonders.local\",\n    \"public\": true,\n    \"updatedAt\": \"2026-03-05T09:00:00.000Z\",\n    \"createdAt\": \"2026-03-04T09:33:14.233Z\"\n  },\n  \"message\": \"Tenants successfully updated.\"\n}"
             }
-          }
+          ]
         },
         {
           "name": "Delete",
@@ -106,21 +221,48 @@
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/tenants/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Xóa tenant\n\nXóa tenant khỏi hệ thống. Chỉ super-admin mới nên thực hiện.\n\n**Lưu ý:** Xóa tenant không tự động xóa dữ liệu liên quan (pages, tickets, orders, site-settings)."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "JWT {{token}}" }], "url": "{{base_url}}/api/tenants/3" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"doc\": { \"id\": 3, \"name\": \"Tên Tenant\", \"slug\": \"tenant-slug\" },\n  \"message\": \"Tenants successfully deleted.\"\n}"
+            }
+          ]
         }
       ]
     },
     {
       "name": "Users",
+      "description": "Quản lý tài khoản người dùng trong hệ thống.\n\n## Phân quyền\n\n| Thao tác | Yêu cầu |\n|----------|--------|\n| GET | Phải login |\n| POST | Phải login (super-admin) |\n| PATCH | Phải login |\n| DELETE | Phải login |\n\n## Roles\n\n- `super-admin`: Quản lý toàn bộ hệ thống, thấy mọi dữ liệu\n- `user`: Tenant admin, chỉ quản lý tenant được giao trong `tenants[]`",
       "item": [
         {
           "name": "Get all",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
-            "url": "{{base_url}}/api/users"
-          }
+            "url": "{{base_url}}/api/users",
+            "description": "# Lấy danh sách users\n\nYêu cầu quyền super-admin.\n\n### Mô tả từng User\n\n- `id`: ID của user\n- `email`: Địa chỉ email\n- `roles`: Mảng role toàn hệ thống (`super-admin` hoặc `user`)\n- `tenants[].tenant`: Thông tin tenant được giao (id, name, slug)\n- `tenants[].roles`: Role trong tenant đó (`admin`)"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": { "method": "GET", "header": [{ "key": "Authorization", "value": "JWT {{token}}" }], "url": "{{base_url}}/api/users" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"docs\": [\n    {\n      \"id\": 1,\n      \"email\": \"admin@example.com\",\n      \"roles\": [\"super-admin\"],\n      \"tenants\": []\n    },\n    {\n      \"id\": 2,\n      \"email\": \"vinwonders@example.com\",\n      \"roles\": [\"user\"],\n      \"tenants\": [\n        {\n          \"tenant\": { \"id\": 1, \"name\": \"VinWonders\", \"slug\": \"funpark\" },\n          \"roles\": [\"admin\"]\n        }\n      ]\n    },\n    {\n      \"id\": 3,\n      \"email\": \"phuongtrang@example.com\",\n      \"roles\": [\"user\"],\n      \"tenants\": [\n        {\n          \"tenant\": { \"id\": 2, \"name\": \"Phương Trang\", \"slug\": \"busline\" },\n          \"roles\": [\"admin\"]\n        }\n      ]\n    }\n  ],\n  \"totalDocs\": 3,\n  \"limit\": 10,\n  \"page\": 1,\n  \"totalPages\": 1,\n  \"hasNextPage\": false,\n  \"hasPrevPage\": false\n}"
+            }
+          ]
         },
         {
           "name": "Get by ID",
@@ -128,8 +270,10 @@
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/users/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Lấy thông tin user theo ID"
+          },
+          "response": []
         },
         {
           "name": "Create",
@@ -142,25 +286,39 @@
             "url": "{{base_url}}/api/users",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"roles\": [\"user\"]\n}"
+              "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"password123\",\n  \"roles\": [\"user\"],\n  \"tenants\": [\n    {\n      \"tenant\": 1,\n      \"roles\": [\"admin\"]\n    }\n  ]\n}"
+            },
+            "description": "# Tạo user mới\n\nYêu cầu quyền super-admin.\n\n## Body\n\n- `email` _(bắt buộc)_: Địa chỉ email (phải duy nhất)\n- `password` _(bắt buộc)_: Mật khẩu\n- `roles` _(bắt buộc)_: `[\"user\"]` hoặc `[\"super-admin\"]`\n- `tenants` _(tùy chọn)_: Danh sách tenant giao cho user\n  - `tenant`: ID số nguyên của tenant\n  - `roles`: `[\"admin\"]`"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
+                "url": "{{base_url}}/api/users",
+                "body": { "mode": "raw", "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"password123\",\n  \"roles\": [\"user\"],\n  \"tenants\": [{ \"tenant\": 1, \"roles\": [\"admin\"] }]\n}" }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"doc\": {\n    \"id\": 4,\n    \"email\": \"newuser@example.com\",\n    \"roles\": [\"user\"],\n    \"tenants\": [\n      { \"tenant\": { \"id\": 1, \"name\": \"VinWonders\" }, \"roles\": [\"admin\"] }\n    ],\n    \"createdAt\": \"2026-03-05T08:00:00.000Z\",\n    \"updatedAt\": \"2026-03-05T08:00:00.000Z\"\n  },\n  \"message\": \"Users successfully created.\"\n}"
             }
-          }
+          ]
         },
         {
           "name": "Update",
           "request": {
             "method": "PATCH",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "JWT {{token}}" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/users/:id",
-            "variable": [{ "key": "id", "value": "" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"updated@example.com\"\n}"
-            }
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"updated@example.com\"\n}" },
+            "description": "# Cập nhật user\n\nChỉ cần gửi các field muốn thay đổi: `email`, `password`, `roles`, `tenants`."
+          },
+          "response": []
         },
         {
           "name": "Delete",
@@ -168,13 +326,16 @@
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/users/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Xóa user"
+          },
+          "response": []
         }
       ]
     },
     {
       "name": "Pages",
+      "description": "Quản lý các trang nội dung CMS của từng tenant. Mỗi page có `slug` riêng tương ứng với URL trên frontend.\n\n**Ví dụ:** Page có `slug = about` → URL frontend `/about`\n\n## Phân quyền\n\n| Thao tác | Yêu cầu |\n|----------|--------|\n| GET | Không cần login (public) |\n| POST | Phải login, chỉ admin của tenant đó |\n| PATCH | Phải login, chỉ admin của tenant đó |\n| DELETE | Phải login, chỉ admin của tenant đó |",
       "item": [
         {
           "name": "Get all",
@@ -185,50 +346,74 @@
               "host": ["{{base_url}}"],
               "path": ["api", "pages"],
               "query": [
-                { "key": "where[tenant][equals]", "value": "", "disabled": true },
-                { "key": "where[slug][equals]", "value": "home", "disabled": true }
+                { "key": "where[tenant][equals]", "value": "1", "disabled": true, "description": "Lọc theo ID tenant (số nguyên), VD: 1" },
+                { "key": "where[slug][equals]", "value": "home", "disabled": true, "description": "Lọc theo slug của page, VD: home, about, career" },
+                { "key": "limit", "value": "10", "disabled": true, "description": "Số kết quả tối đa. Mặc định: 10" }
               ]
+            },
+            "description": "# Lấy danh sách pages\n\nKhông yêu cầu xác thực. Thường dùng kết hợp filter `tenant` + `slug` để lấy đúng trang cần hiển thị.\n\n## Query Params\n\n- `where[tenant][equals]` _(tùy chọn)_: Lọc theo ID của tenant, VD: `1`\n- `where[slug][equals]` _(tùy chọn)_: Lọc theo slug, VD: `home`, `about`\n- `limit` _(tùy chọn)_: Số kết quả tối đa. Mặc định: `10`\n\n### Mô tả từng Page\n\n- `id`: ID của page\n- `title`: Tiêu đề hiển thị\n- `slug`: Đường dẫn URL của trang\n- `content`: Nội dung văn bản\n- `tenant`: Thông tin tenant sở hữu page này"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": { "method": "GET", "url": "{{base_url}}/api/pages?where[tenant][equals]=1" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"docs\": [\n    {\n      \"id\": 1,\n      \"title\": \"Trang chủ\",\n      \"slug\": \"home\",\n      \"content\": \"Chào mừng đến với VinWonders!\",\n      \"tenant\": { \"id\": 1, \"name\": \"VinWonders\", \"slug\": \"funpark\" },\n      \"updatedAt\": \"2026-03-04T10:00:00.000Z\",\n      \"createdAt\": \"2026-03-04T10:00:00.000Z\"\n    },\n    {\n      \"id\": 2,\n      \"title\": \"Giới thiệu\",\n      \"slug\": \"about\",\n      \"content\": \"VinWonders là khu vui chơi giải trí...\",\n      \"tenant\": { \"id\": 1, \"name\": \"VinWonders\", \"slug\": \"funpark\" },\n      \"updatedAt\": \"2026-03-04T10:00:00.000Z\",\n      \"createdAt\": \"2026-03-04T10:00:00.000Z\"\n    }\n  ],\n  \"totalDocs\": 2,\n  \"limit\": 10,\n  \"page\": 1,\n  \"totalPages\": 1,\n  \"hasNextPage\": false,\n  \"hasPrevPage\": false\n}"
             }
-          }
+          ]
         },
         {
           "name": "Get by ID",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/pages/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Lấy page theo ID"
+          },
+          "response": []
         },
         {
           "name": "Create",
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "JWT {{token}}" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/pages",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Trang chủ\",\n  \"slug\": \"home\",\n  \"content\": \"Nội dung trang\",\n  \"tenant\": \"\"\n}"
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Tuyển dụng\",\n  \"slug\": \"career\",\n  \"content\": \"Chúng tôi đang tuyển dụng...\",\n  \"tenant\": 1\n}" },
+            "description": "# Tạo page mới\n\nTạo trang nội dung CMS cho một tenant. Yêu cầu login với quyền admin của tenant đó.\n\n## Body\n\n- `title` _(bắt buộc)_: Tiêu đề hiển thị của trang\n- `slug` _(bắt buộc)_: Đường dẫn URL — chỉ dùng ký tự thường, số và dấu `-`, VD: `about`, `career`, `lien-he`\n- `content` _(tùy chọn)_: Nội dung văn bản của trang\n- `tenant` _(bắt buộc)_: ID **số nguyên** của tenant, VD: `1` (không dùng string `\"1\"`)"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
+                "url": "{{base_url}}/api/pages",
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Tuyển dụng\",\n  \"slug\": \"career\",\n  \"content\": \"Chúng tôi đang tuyển dụng...\",\n  \"tenant\": 1\n}" }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"doc\": {\n    \"id\": 10,\n    \"title\": \"Tuyển dụng\",\n    \"slug\": \"career\",\n    \"content\": \"Chúng tôi đang tuyển dụng...\",\n    \"tenant\": { \"id\": 1, \"name\": \"VinWonders\", \"slug\": \"funpark\" },\n    \"updatedAt\": \"2026-03-05T08:00:00.000Z\",\n    \"createdAt\": \"2026-03-05T08:00:00.000Z\"\n  },\n  \"message\": \"Pages successfully created.\"\n}"
             }
-          }
+          ]
         },
         {
           "name": "Update",
           "request": {
             "method": "PATCH",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "JWT {{token}}" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/pages/:id",
-            "variable": [{ "key": "id", "value": "" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Updated Title\"\n}"
-            }
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Tiêu đề mới\",\n  \"content\": \"Nội dung mới...\"\n}" },
+            "description": "# Cập nhật page\n\nChỉ admin của tenant sở hữu page này mới có quyền. Chỉ gửi field cần thay đổi."
+          },
+          "response": []
         },
         {
           "name": "Delete",
@@ -236,13 +421,16 @@
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/pages/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Xóa page"
+          },
+          "response": []
         }
       ]
     },
     {
       "name": "Tickets",
+      "description": "Quản lý các loại vé của từng tenant. Frontend hiển thị danh sách vé `status = active` để khách đặt.\n\n## Phân quyền\n\n| Thao tác | Yêu cầu |\n|----------|--------|\n| GET | Không cần login (public) |\n| POST | Phải login, admin của tenant đó |\n| PATCH | Phải login, admin của tenant đó |\n| DELETE | Phải login, admin của tenant đó |\n\n## Trạng thái vé (`status`)\n\n- `active`: Đang mở bán\n- `sold-out`: Hết vé\n- `paused`: Tạm dừng bán",
       "item": [
         {
           "name": "Get all",
@@ -253,50 +441,74 @@
               "host": ["{{base_url}}"],
               "path": ["api", "tickets"],
               "query": [
-                { "key": "where[tenant][equals]", "value": "", "disabled": true },
-                { "key": "where[status][equals]", "value": "active", "disabled": true }
+                { "key": "where[tenant][equals]", "value": "1", "disabled": true, "description": "Lọc theo ID tenant, VD: 1" },
+                { "key": "where[status][equals]", "value": "active", "disabled": true, "description": "Lọc theo trạng thái: active | sold-out | paused" },
+                { "key": "limit", "value": "100", "disabled": true, "description": "Số kết quả tối đa. Mặc định: 10" }
               ]
+            },
+            "description": "# Lấy danh sách vé\n\nKhông yêu cầu xác thực. Thường dùng filter `tenant` + `status=active` để lấy vé đang bán.\n\n## Query Params\n\n- `where[tenant][equals]` _(tùy chọn)_: Lọc theo ID tenant (số nguyên), VD: `1`\n- `where[status][equals]` _(tùy chọn)_: Lọc theo trạng thái — `active`, `sold-out`, hoặc `paused`\n- `limit` _(tùy chọn)_: Số kết quả tối đa. Mặc định: `10`\n\n### Mô tả từng Ticket\n\n- `id`: ID của vé\n- `name`: Tên loại vé, VD: `Vé người lớn`, `Vé trẻ em`\n- `description`: Mô tả chi tiết\n- `price`: Giá vé (đơn vị: VNĐ)\n- `status`: Trạng thái — `active` / `sold-out` / `paused`\n- `tenant`: Thông tin tenant sở hữu"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": { "method": "GET", "url": "{{base_url}}/api/tickets?where[tenant][equals]=1&where[status][equals]=active" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"docs\": [\n    {\n      \"id\": 1,\n      \"name\": \"Vé người lớn\",\n      \"description\": \"Áp dụng cho khách từ 12 tuổi trở lên\",\n      \"price\": 350000,\n      \"status\": \"active\",\n      \"tenant\": { \"id\": 1, \"name\": \"VinWonders\" }\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Vé trẻ em\",\n      \"description\": \"Áp dụng cho trẻ từ 5-11 tuổi\",\n      \"price\": 200000,\n      \"status\": \"active\",\n      \"tenant\": { \"id\": 1, \"name\": \"VinWonders\" }\n    }\n  ],\n  \"totalDocs\": 2,\n  \"limit\": 10,\n  \"page\": 1,\n  \"totalPages\": 1,\n  \"hasNextPage\": false,\n  \"hasPrevPage\": false\n}"
             }
-          }
+          ]
         },
         {
           "name": "Get by ID",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/tickets/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Lấy vé theo ID"
+          },
+          "response": []
         },
         {
           "name": "Create",
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "JWT {{token}}" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/tickets",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Vé người lớn\",\n  \"description\": \"Mô tả vé\",\n  \"price\": 200000,\n  \"status\": \"active\",\n  \"tenant\": \"\"\n}"
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Vé người lớn\",\n  \"description\": \"Áp dụng cho khách từ 12 tuổi trở lên\",\n  \"price\": 350000,\n  \"status\": \"active\",\n  \"tenant\": 1\n}" },
+            "description": "# Tạo loại vé mới\n\n## Body\n\n- `name` _(bắt buộc)_: Tên loại vé\n- `description` _(tùy chọn)_: Mô tả chi tiết về vé\n- `price` _(bắt buộc)_: Giá vé tính bằng VNĐ (số nguyên), VD: `350000`\n- `status` _(bắt buộc)_: Trạng thái ban đầu — `active`, `sold-out`, hoặc `paused`\n- `tenant` _(bắt buộc)_: ID **số nguyên** của tenant sở hữu vé này"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
+                "url": "{{base_url}}/api/tickets",
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Vé người lớn\",\n  \"price\": 350000,\n  \"status\": \"active\",\n  \"tenant\": 1\n}" }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"doc\": {\n    \"id\": 10,\n    \"name\": \"Vé người lớn\",\n    \"description\": \"Áp dụng cho khách từ 12 tuổi trở lên\",\n    \"price\": 350000,\n    \"status\": \"active\",\n    \"tenant\": { \"id\": 1, \"name\": \"VinWonders\" },\n    \"updatedAt\": \"2026-03-05T08:00:00.000Z\",\n    \"createdAt\": \"2026-03-05T08:00:00.000Z\"\n  },\n  \"message\": \"Tickets successfully created.\"\n}"
             }
-          }
+          ]
         },
         {
           "name": "Update",
           "request": {
             "method": "PATCH",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "JWT {{token}}" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/tickets/:id",
-            "variable": [{ "key": "id", "value": "" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"price\": 250000\n}"
-            }
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "body": { "mode": "raw", "raw": "{\n  \"price\": 380000,\n  \"status\": \"sold-out\"\n}" },
+            "description": "# Cập nhật vé\n\nThường dùng để thay đổi giá hoặc trạng thái vé.\n\n## Body (partial update)\n\n- `name`: Tên vé mới\n- `price`: Giá mới (VNĐ)\n- `status`: Trạng thái mới — `active` / `sold-out` / `paused`\n- `description`: Mô tả mới"
+          },
+          "response": []
         },
         {
           "name": "Delete",
@@ -304,13 +516,16 @@
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/tickets/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Xóa vé"
+          },
+          "response": []
         }
       ]
     },
     {
       "name": "Orders",
+      "description": "Quản lý đơn đặt vé của khách hàng. Đơn hàng được tạo từ frontend khi khách điền form mua vé — không yêu cầu đăng nhập.\n\n## Phân quyền\n\n| Thao tác | Yêu cầu |\n|----------|--------|\n| GET | Phải login (tenant admin xem đơn của mình) |\n| POST (đặt vé) | Không cần login (khách hàng) |\n| PATCH | Phải login, admin của tenant |\n| DELETE | Phải login, admin của tenant |",
       "item": [
         {
           "name": "Get all",
@@ -322,10 +537,23 @@
               "host": ["{{base_url}}"],
               "path": ["api", "orders"],
               "query": [
-                { "key": "where[tenant][equals]", "value": "", "disabled": true }
+                { "key": "where[tenant][equals]", "value": "1", "disabled": true, "description": "Lọc theo ID tenant để xem đơn của một tenant cụ thể" }
               ]
+            },
+            "description": "# Lấy danh sách đơn hàng\n\nYêu cầu đăng nhập. Tenant admin chỉ thấy đơn của tenant mình.\n\n## Query Params\n\n- `where[tenant][equals]` _(tùy chọn)_: Lọc theo ID tenant, VD: `1`\n\n### Mô tả từng Order\n\n- `id`: ID của đơn hàng\n- `orderCode`: Mã đơn duy nhất do frontend sinh, VD: `ORD-20260304-ABCDE`\n- `tenant`: Tenant nhận đơn\n- `ticket`: Loại vé đặt\n- `quantity`: Số lượng vé\n- `totalAmount`: Tổng tiền (VNĐ) = price × quantity\n- `buyerName`: Họ tên người đặt\n- `buyerEmail`: Email người đặt\n- `buyerPhone`: Số điện thoại người đặt"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": { "method": "GET", "header": [{ "key": "Authorization", "value": "JWT {{token}}" }], "url": "{{base_url}}/api/orders?where[tenant][equals]=1" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"docs\": [\n    {\n      \"id\": 1,\n      \"orderCode\": \"ORD-20260304-ABCDE\",\n      \"tenant\": { \"id\": 1, \"name\": \"VinWonders\" },\n      \"ticket\": { \"id\": 1, \"name\": \"Vé người lớn\", \"price\": 350000 },\n      \"quantity\": 2,\n      \"totalAmount\": 700000,\n      \"buyerName\": \"Nguyễn Văn A\",\n      \"buyerEmail\": \"a@example.com\",\n      \"buyerPhone\": \"0901234567\",\n      \"updatedAt\": \"2026-03-04T10:00:00.000Z\",\n      \"createdAt\": \"2026-03-04T10:00:00.000Z\"\n    }\n  ],\n  \"totalDocs\": 1,\n  \"limit\": 10,\n  \"page\": 1,\n  \"totalPages\": 1,\n  \"hasNextPage\": false,\n  \"hasPrevPage\": false\n}"
             }
-          }
+          ]
         },
         {
           "name": "Get by ID",
@@ -333,36 +561,52 @@
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/orders/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Lấy đơn hàng theo ID"
+          },
+          "response": []
         },
         {
-          "name": "Create",
+          "name": "Create (đặt vé)",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "url": "{{base_url}}/api/orders",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"orderCode\": \"ORD-20240101-ABCDE\",\n  \"tenant\": \"\",\n  \"ticket\": \"\",\n  \"quantity\": 1,\n  \"totalAmount\": 200000,\n  \"buyerName\": \"Nguyễn Văn A\",\n  \"buyerEmail\": \"a@example.com\",\n  \"buyerPhone\": \"0901234567\"\n}"
+              "raw": "{\n  \"orderCode\": \"ORD-20260305-XYZAB\",\n  \"tenant\": 1,\n  \"ticket\": 1,\n  \"quantity\": 2,\n  \"totalAmount\": 700000,\n  \"buyerName\": \"Nguyễn Văn A\",\n  \"buyerEmail\": \"a@example.com\",\n  \"buyerPhone\": \"0901234567\"\n}"
+            },
+            "description": "# Tạo đơn đặt vé\n\nKhách hàng đặt vé từ frontend. **Không cần đăng nhập.**\n\n## Body\n\n- `orderCode` _(bắt buộc)_: Mã đơn duy nhất — frontend tự sinh, VD: `ORD-20260305-XYZAB`\n- `tenant` _(bắt buộc)_: ID **số nguyên** của tenant, VD: `1`\n- `ticket` _(bắt buộc)_: ID **số nguyên** của loại vé muốn đặt\n- `quantity` _(bắt buộc)_: Số lượng vé (số nguyên dương)\n- `totalAmount` _(bắt buộc)_: Tổng tiền = `price × quantity` (VNĐ)\n- `buyerName` _(bắt buộc)_: Họ tên người đặt vé\n- `buyerEmail` _(bắt buộc)_: Email người đặt\n- `buyerPhone` _(bắt buộc)_: Số điện thoại người đặt"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": "{{base_url}}/api/orders",
+                "body": { "mode": "raw", "raw": "{\n  \"orderCode\": \"ORD-20260305-XYZAB\",\n  \"tenant\": 1,\n  \"ticket\": 1,\n  \"quantity\": 2,\n  \"totalAmount\": 700000,\n  \"buyerName\": \"Nguyễn Văn A\",\n  \"buyerEmail\": \"a@example.com\",\n  \"buyerPhone\": \"0901234567\"\n}" }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"doc\": {\n    \"id\": 20,\n    \"orderCode\": \"ORD-20260305-XYZAB\",\n    \"tenant\": { \"id\": 1, \"name\": \"VinWonders\" },\n    \"ticket\": { \"id\": 1, \"name\": \"Vé người lớn\", \"price\": 350000 },\n    \"quantity\": 2,\n    \"totalAmount\": 700000,\n    \"buyerName\": \"Nguyễn Văn A\",\n    \"buyerEmail\": \"a@example.com\",\n    \"buyerPhone\": \"0901234567\",\n    \"updatedAt\": \"2026-03-05T08:00:00.000Z\",\n    \"createdAt\": \"2026-03-05T08:00:00.000Z\"\n  },\n  \"message\": \"Orders successfully created.\"\n}"
             }
-          }
+          ]
         },
         {
           "name": "Update",
           "request": {
             "method": "PATCH",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "JWT {{token}}" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/orders/:id",
-            "variable": [{ "key": "id", "value": "" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"quantity\": 2\n}"
-            }
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "body": { "mode": "raw", "raw": "{\n  \"quantity\": 3,\n  \"totalAmount\": 1050000\n}" },
+            "description": "# Cập nhật đơn hàng\n\nYêu cầu quyền admin của tenant."
+          },
+          "response": []
         },
         {
           "name": "Delete",
@@ -370,13 +614,16 @@
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/orders/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Xóa đơn hàng"
+          },
+          "response": []
         }
       ]
     },
     {
       "name": "Site Settings",
+      "description": "Cấu hình giao diện và nội dung cho từng tenant. Mỗi tenant chỉ có **một** bản site settings bao gồm header, theme màu sắc và footer.\n\n## Phân quyền\n\n| Thao tác | Yêu cầu |\n|----------|--------|\n| GET | Không cần login (public) |\n| POST | Phải login, admin của tenant đó |\n| PATCH | Phải login, admin của tenant đó |\n| DELETE | Phải login, admin của tenant đó |",
       "item": [
         {
           "name": "Get all",
@@ -387,49 +634,59 @@
               "host": ["{{base_url}}"],
               "path": ["api", "site-settings"],
               "query": [
-                { "key": "where[tenant][equals]", "value": "", "disabled": true }
+                { "key": "where[tenant][equals]", "value": "1", "disabled": true, "description": "Lọc theo ID tenant để lấy config của đúng tenant cần hiển thị" }
               ]
+            },
+            "description": "# Lấy site settings\n\nThường dùng filter `tenant` để lấy config của một tenant cụ thể.\n\n## Query Params\n\n- `where[tenant][equals]` _(tùy chọn)_: ID của tenant\n\n### Mô tả Response\n\n- `header.enabled`: Bật/tắt header\n- `header.logoText`: Text hiển thị thay logo\n- `header.topBar.enabled`: Bật/tắt thanh thông báo trên cùng\n- `header.topBar.leftText` / `rightText`: Nội dung thanh thông báo\n- `header.navLinks`: Danh sách link menu — mảng `[{label, url}]`\n- `theme.primaryColor`: Màu chủ đạo (mã hex), VD: `#3b82f6`\n- `theme.heroBgFrom`: Màu gradient bắt đầu của banner hero\n- `theme.heroBgTo`: Màu gradient kết thúc của banner hero\n- `theme.fontFamily`: Font chữ — `segoe` / `inter` / `roboto` / `merriweather`\n- `footer.enabled`: Bật/tắt footer\n- `footer.copyrightText`: Văn bản copyright\n- `footer.columns`: Các cột nội dung footer"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": { "method": "GET", "url": "{{base_url}}/api/site-settings?where[tenant][equals]=1" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"docs\": [\n    {\n      \"id\": 1,\n      \"tenant\": { \"id\": 1, \"name\": \"VinWonders\" },\n      \"header\": {\n        \"enabled\": true,\n        \"logoText\": \"VinWonders\",\n        \"topBar\": {\n          \"enabled\": true,\n          \"leftText\": \"Khai trương mùa hè 2026!\",\n          \"rightText\": \"Hotline: 0901 111 123\"\n        },\n        \"navLinks\": [\n          { \"label\": \"Trang chủ\", \"url\": \"/\" },\n          { \"label\": \"Mua vé\", \"url\": \"/tickets\" },\n          { \"label\": \"Giới thiệu\", \"url\": \"/about\" }\n        ]\n      },\n      \"theme\": {\n        \"primaryColor\": \"#e63946\",\n        \"heroBgFrom\": \"#1d3557\",\n        \"heroBgTo\": \"#e63946\",\n        \"fontFamily\": \"inter\"\n      },\n      \"footer\": {\n        \"enabled\": true,\n        \"copyrightText\": \"© 2026 VinWonders. All rights reserved.\",\n        \"columns\": []\n      },\n      \"updatedAt\": \"2026-03-04T14:00:00.000Z\",\n      \"createdAt\": \"2026-03-04T09:33:14.000Z\"\n    }\n  ],\n  \"totalDocs\": 1,\n  \"limit\": 10,\n  \"page\": 1,\n  \"totalPages\": 1,\n  \"hasNextPage\": false,\n  \"hasPrevPage\": false\n}"
             }
-          }
+          ]
         },
         {
           "name": "Get by ID",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/site-settings/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Lấy site settings theo ID"
+          },
+          "response": []
         },
         {
           "name": "Create",
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "JWT {{token}}" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/site-settings",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"tenant\": \"\",\n  \"header\": {\n    \"enabled\": true,\n    \"logoText\": \"Logo\",\n    \"navLinks\": []\n  },\n  \"theme\": {\n    \"primaryColor\": \"#3b82f6\",\n    \"heroBgFrom\": \"#1e3a5f\",\n    \"heroBgTo\": \"#3b82f6\"\n  },\n  \"footer\": {\n    \"enabled\": true,\n    \"columns\": []\n  }\n}"
-            }
-          }
+              "raw": "{\n  \"tenant\": 1,\n  \"header\": {\n    \"enabled\": true,\n    \"logoText\": \"VinWonders\",\n    \"topBar\": {\n      \"enabled\": true,\n      \"leftText\": \"Khai trương mùa hè!\",\n      \"rightText\": \"Hotline: 0901 111 123\"\n    },\n    \"navLinks\": [\n      { \"label\": \"Trang chủ\", \"url\": \"/\" },\n      { \"label\": \"Mua vé\", \"url\": \"/tickets\" }\n    ]\n  },\n  \"theme\": {\n    \"primaryColor\": \"#e63946\",\n    \"heroBgFrom\": \"#1d3557\",\n    \"heroBgTo\": \"#e63946\",\n    \"fontFamily\": \"inter\"\n  },\n  \"footer\": {\n    \"enabled\": true,\n    \"copyrightText\": \"© 2026 VinWonders\",\n    \"columns\": []\n  }\n}"
+            },
+            "description": "# Tạo site settings cho tenant\n\nMỗi tenant chỉ nên có **một** bản site settings.\n\n## Body\n\n- `tenant` _(bắt buộc)_: ID **số nguyên** của tenant\n- `header.enabled`: Bật/tắt header\n- `header.logoText`: Text logo\n- `header.topBar.enabled`: Bật/tắt thanh thông báo trên cùng\n- `header.topBar.leftText` / `rightText`: Nội dung thanh thông báo (hotline, khuyến mãi...)\n- `header.navLinks`: Mảng `[{label, url}]` — danh sách link menu\n- `theme.primaryColor`: Màu hex chủ đạo, VD: `#3b82f6`\n- `theme.heroBgFrom` / `heroBgTo`: Màu gradient banner hero\n- `theme.fontFamily`: `segoe` / `inter` / `roboto` / `merriweather`\n- `footer.enabled`: Bật/tắt footer\n- `footer.copyrightText`: Text copyright\n- `footer.columns`: Mảng cột footer"
+          },
+          "response": []
         },
         {
           "name": "Update",
           "request": {
             "method": "PATCH",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "JWT {{token}}" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/site-settings/:id",
-            "variable": [{ "key": "id", "value": "" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"theme\": {\n    \"primaryColor\": \"#e84118\"\n  }\n}"
-            }
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "body": { "mode": "raw", "raw": "{\n  \"theme\": {\n    \"primaryColor\": \"#e84118\"\n  }\n}" },
+            "description": "# Cập nhật site settings\n\nChỉ cần gửi các field muốn thay đổi.\n\n**Ví dụ phổ biến — chỉ đổi màu:**\n```json\n{ \"theme\": { \"primaryColor\": \"#e84118\" } }\n```\n\n**Đổi nav links:**\n```json\n{\n  \"header\": {\n    \"navLinks\": [\n      { \"label\": \"Trang chủ\", \"url\": \"/\" },\n      { \"label\": \"Mua vé\", \"url\": \"/tickets\" },\n      { \"label\": \"Liên hệ\", \"url\": \"/contact\" }\n    ]\n  }\n}\n```"
+          },
+          "response": []
         },
         {
           "name": "Delete",
@@ -437,28 +694,46 @@
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/site-settings/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Xóa site settings"
+          },
+          "response": []
         }
       ]
     },
     {
       "name": "Media",
+      "description": "Quản lý file ảnh upload lên hệ thống. Ảnh được lưu tại `backend/public/media/` và truy cập qua URL tuyệt đối.\n\n**URL ảnh:** `http://localhost:3000/api/media/file/{filename}`\n\n## Phân quyền\n\n| Thao tác | Yêu cầu |\n|----------|--------|\n| GET | Không cần login (public) |\n| Upload | Phải login |\n| Delete | Phải login |",
       "item": [
         {
           "name": "Get all",
           "request": {
             "method": "GET",
-            "url": "{{base_url}}/api/media"
-          }
+            "url": "{{base_url}}/api/media",
+            "description": "# Lấy danh sách media\n\nTrả về danh sách tất cả file ảnh đã upload. Không cần đăng nhập.\n\n### Mô tả từng Media\n\n- `id`: ID của file\n- `alt`: Mô tả ảnh (alt text)\n- `url`: URL tuyệt đối để hiển thị ảnh, VD: `http://localhost:3000/api/media/file/name.jpg`\n- `thumbnailURL`: URL ảnh thumbnail (nếu có)\n- `filename`: Tên file trên server (có timestamp để tránh trùng)\n- `mimeType`: Loại file, VD: `image/jpeg`, `image/png`\n- `filesize`: Dung lượng file (bytes)\n- `width` / `height`: Kích thước ảnh (pixels)"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": { "method": "GET", "url": "{{base_url}}/api/media" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"docs\": [\n    {\n      \"id\": 1,\n      \"alt\": \"VinWonders banner\",\n      \"url\": \"http://localhost:3000/api/media/file/VinWonders-1-1741234567890.jpg\",\n      \"thumbnailURL\": null,\n      \"filename\": \"VinWonders-1-1741234567890.jpg\",\n      \"mimeType\": \"image/jpeg\",\n      \"filesize\": 204800,\n      \"width\": 1920,\n      \"height\": 1080,\n      \"updatedAt\": \"2026-03-04T09:33:14.000Z\",\n      \"createdAt\": \"2026-03-04T09:33:14.000Z\"\n    },\n    {\n      \"id\": 2,\n      \"alt\": \"Phương Trang bus\",\n      \"url\": \"http://localhost:3000/api/media/file/PhuongTrang-2-1741234599000.jpg\",\n      \"thumbnailURL\": null,\n      \"filename\": \"PhuongTrang-2-1741234599000.jpg\",\n      \"mimeType\": \"image/jpeg\",\n      \"filesize\": 153600,\n      \"width\": 1280,\n      \"height\": 720,\n      \"updatedAt\": \"2026-03-04T09:33:14.000Z\",\n      \"createdAt\": \"2026-03-04T09:33:14.000Z\"\n    }\n  ],\n  \"totalDocs\": 2,\n  \"limit\": 10,\n  \"page\": 1,\n  \"totalPages\": 1,\n  \"hasNextPage\": false,\n  \"hasPrevPage\": false\n}"
+            }
+          ]
         },
         {
           "name": "Get by ID",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/media/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Lấy thông tin media theo ID"
+          },
+          "response": []
         },
         {
           "name": "Upload",
@@ -469,11 +744,35 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "file", "type": "file", "src": "" },
-                { "key": "alt", "value": "Mô tả ảnh", "type": "text" }
+                { "key": "file", "type": "file", "src": "", "description": "File ảnh cần upload (jpg, png, webp,...)" },
+                { "key": "alt", "value": "Mô tả ảnh", "type": "text", "description": "Alt text mô tả nội dung ảnh (dùng cho SEO)" }
               ]
+            },
+            "description": "# Upload ảnh\n\nUpload file ảnh lên server. Yêu cầu đăng nhập.\n\n**Lưu ý:** Phải dùng `form-data`, không dùng `raw JSON`.\n\n## Form Data\n\n- `file` _(bắt buộc)_: Chọn file ảnh từ máy — hỗ trợ `jpg`, `png`, `webp`, `gif`\n- `alt` _(tùy chọn)_: Mô tả ngắn về ảnh (alt text dùng cho SEO và accessibility)\n\n## Cơ chế tên file\n\nTên file được tự động thêm timestamp để tránh trùng lặp:\n- File gốc: `banner.jpg`\n- Lưu thành: `banner-1741234567890.jpg`\n\n### Mô tả Response\n\n- `doc.url`: URL tuyệt đối để hiển thị ảnh — dùng URL này trong `tenant.images`\n- `doc.filename`: Tên file trên server (đã có timestamp)\n- `doc.filesize`: Dung lượng (bytes)\n- `doc.width` / `doc.height`: Kích thước ảnh tự động đọc từ file"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
+                "url": "{{base_url}}/api/media",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    { "key": "file", "type": "file", "src": "" },
+                    { "key": "alt", "value": "Mô tả ảnh", "type": "text" }
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"doc\": {\n    \"id\": 5,\n    \"alt\": \"Mô tả ảnh\",\n    \"url\": \"http://localhost:3000/api/media/file/banner-1741234567890.jpg\",\n    \"thumbnailURL\": null,\n    \"filename\": \"banner-1741234567890.jpg\",\n    \"mimeType\": \"image/jpeg\",\n    \"filesize\": 102400,\n    \"width\": 1200,\n    \"height\": 630,\n    \"updatedAt\": \"2026-03-05T08:00:00.000Z\",\n    \"createdAt\": \"2026-03-05T08:00:00.000Z\"\n  },\n  \"message\": \"Media successfully created.\"\n}"
             }
-          }
+          ]
         },
         {
           "name": "Delete",
@@ -481,8 +780,10 @@
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "JWT {{token}}" }],
             "url": "{{base_url}}/api/media/:id",
-            "variable": [{ "key": "id", "value": "" }]
-          }
+            "variable": [{ "key": "id", "value": "1" }],
+            "description": "# Xóa media\n\nXóa file media khỏi DB và xóa file vật lý trên server.\n\n**Lưu ý:** Nếu ảnh này đang được dùng trong `tenant.images`, xóa sẽ làm hỏng relationship đó."
+          },
+          "response": []
         }
       ]
     }
