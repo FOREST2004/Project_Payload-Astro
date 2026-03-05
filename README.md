@@ -191,6 +191,22 @@ User bấm "Mua ngay" (TicketCard)
 
 ---
 
+## API Testing (Postman)
+
+File `Payload-Astro API.json` ở thư mục gốc là Postman Collection chứa toàn bộ các API của hệ thống, đã được cấu hình sẵn với mô tả chi tiết cho từng endpoint.
+
+**Cách import:**
+
+1. Mở Postman → **Import**
+2. Chọn file `Payload-Astro API.json`
+3. Đăng nhập bằng API **Auth / Login** → copy `token` từ response
+4. Set biến Environment `token` = giá trị vừa copy
+5. Tất cả request còn lại đã cấu hình `Authorization: JWT {{token}}` sẵn
+
+Collection bao gồm 8 nhóm: **Auth**, **Tenants**, **Users**, **Pages**, **Tickets**, **Orders**, **Site Settings**, **Media**.
+
+---
+
 ## Tech Stack
 
 | | Công nghệ |
