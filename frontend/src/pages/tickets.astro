@@ -14,6 +14,7 @@ const [tickets, settings] = await Promise.all([
   getTickets(tenant.id),
   getSiteSettings(tenant.id),
 ]);
+console.log("Tickets::::::", tickets);
 
 const primaryColor = settings?.theme?.primaryColor ?? "#3b82f6";
 const heroBgFrom = settings?.theme?.heroBgFrom ?? "#1e3a5f";
@@ -47,7 +48,6 @@ const heroBgTo = settings?.theme?.heroBgTo ?? "#3b82f6";
             <TicketCard
               client:visible
               ticket={ticket}
-              tenantId={tenant.id}
               primaryColor={primaryColor}
             />
           ))}

@@ -8,7 +8,6 @@ import { Pages } from './collections/Pages/Pages'
 import { Tickets } from './collections/Tickets/Tickets'
 import { SiteSettings } from './collections/SiteSettings/SiteSettings'
 import Users from './collections/Users/Users'
-import { Orders } from './collections/Orders/Orders'
 import { Media } from './collections/Medias/Medias'
 
 const filename = fileURLToPath(import.meta.url)
@@ -18,10 +17,13 @@ export default buildConfig({
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL,
   admin: {
     user: 'users',
+    // access: ({ req }) => {
+    //   return Boolean(req.user)
+    // },
   },
   secret: process.env.PAYLOAD_SECRET as string,
   editor: lexicalEditor({}),
-  collections: [Tenants, Pages, Tickets, SiteSettings, Users, Orders, Media],
+  collections: [Tenants, Pages, Tickets, SiteSettings, Users, Media],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

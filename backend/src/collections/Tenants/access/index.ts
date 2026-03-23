@@ -22,7 +22,7 @@ export const isTenantMember: Access = ({ req }) => {
 
 // Dùng cho create
 export const filterByUserTenants = ({ user }: { user: any }) => {
-  if (!user) return false;
+  if (!user) return false;  
   if (user?.roles?.includes("super-admin")) return true;
 
   const tenantIds = getUserTenantIds(user);

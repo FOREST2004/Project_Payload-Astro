@@ -8,7 +8,6 @@ export const Media: CollectionConfig = {
   },
   upload: {
     staticDir: path.resolve(process.cwd(), 'public/media'),
-    staticURL: '/media',
   },
   hooks: {
     beforeOperation: [
