@@ -131,7 +131,7 @@ function ProductShopInner({
           window.location.href = result.payment_url;
         } else {
           console.log("orderResult:::: ", result);
-          window.location.href = "/";
+          window.alert("Đặt hàng thành công!");
         }
       } else {
         setOrderError("Đặt hàng thất bại. Vui lòng thử lại..");
