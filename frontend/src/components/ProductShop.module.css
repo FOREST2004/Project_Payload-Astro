@@ -1,0 +1,88 @@
+.root {
+  container-type: inline-size;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.section {
+  margin-top: 3rem;
+}
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+
+.discountGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 0.75rem;
+}
+
+.summary {
+  margin-top: 3rem;
+  background: white;
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  border: 1px solid #eef0f3;
+}
+.summaryTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+.summaryRows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #555;
+}
+.summaryLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 1rem;
+}
+.subtotalRow {
+  margin-top: 0.4rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f0f0f0;
+  font-weight: 600;
+  color: #333;
+}
+.discountRow {
+  color: #16a34a;
+  font-weight: 500;
+}
+.totalRow {
+  margin-top: 0.4rem;
+  padding-top: 0.75rem;
+  border-top: 2px solid #f0f0f0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.empty {
+  text-align: center;
+  padding: 5rem 1rem;
+  color: #888;
+}
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}

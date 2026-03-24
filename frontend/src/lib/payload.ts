@@ -1,4 +1,5 @@
 const API_URL = import.meta.env.PAYLOAD_API_URL;
+const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
 
 export type MediaFile = {
   id: string;
@@ -18,6 +19,7 @@ export type Tenant = {
   public?: boolean;
   contact?: { phone?: string; email?: string; address?: string };
   images?: MediaFile[];
+  storeSlug: string;
 };
 
 export type Page = {
@@ -153,4 +155,44 @@ export async function getSiteSettings(
   } catch {
     return null;
   }
+}
+
+
+export async function getProducts(merchantSlug: string, storeSlug: string): Promise<Product[]> {
+  if (!storeSlug || !merchantSlug) {
+    return [];
+  }
+
+  const productsFilter = encodeURIComponent(
+    JSON.stringify({
+      where: { active: true, salesChannels: { inq: ["web"] } },
+      offset: 0,
+      limit: 200,
+    }),
+  );
+
+  const productsUrl = `${API_BASE_URL}/merchants/${merchantSlug}/stores/${storeSlug}/products/search?filter=${productsFilter}&locale=en`;
+  const productsRes = await (await fetch(productsUrl)).json();
+
+  return productsRes?.data || [];
+}
+
+
+export async function getDiscount(merchantSlug: string, storeSlug: string): Promise<Discount[]> {
+  if (!storeSlug || !merchantSlug) {
+    return [];
+  }
+
+  const discountsFilter = encodeURIComponent(
+    JSON.stringify({
+      offset: 0,
+      limit: 200,
+    }),
+  );
+
+  const discountsUrl = `${API_BASE_URL}/merchants/${merchantSlug}/stores/${storeSlug}/discounts?filter=${discountsFilter}`;
+  console.log("Discounts URL::::::", discountsUrl);
+  const discountsRes = await (await fetch(discountsUrl)).json();
+
+  return discountsRes?.data || [];
 }

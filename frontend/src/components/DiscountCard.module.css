@@ -1,0 +1,60 @@
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 2px solid #eef0f3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+.selected {
+  border-color: var(--primary);
+}
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 0;
+}
+.radio {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s;
+}
+.checked {
+  border-color: var(--primary);
+}
+.radioDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+.name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+}
+.badge {
+  flex-shrink: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, white);
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+}

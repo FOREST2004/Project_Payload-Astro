@@ -71,6 +71,7 @@ async function run() {
         email: 'hello@vinwonders.local',
         address: 'VinWonders, Nha Trang, Khánh Hòa',
       },
+      storeSlug: 've-vao-cua',
     },
   )
   console.log('✓ Tenant: VinWonders')
@@ -89,6 +90,7 @@ async function run() {
         email: 'support@phuongtrang.local',
         address: 'Bến xe Miền Tây, TP. Hồ Chí Minh',
       },
+      storeSlug: 'p',
     },
   )
   console.log('✓ Tenant: Phương Trang')

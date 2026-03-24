@@ -56,5 +56,12 @@ export const Tenants: CollectionConfig = {
       hasMany: true,
       label: "Ảnh quảng cáo",
     },
+    {
+      name: "storeSlug",
+      type: "text",
+      required: true,
+      index: true,
+      admin: { description: "Giả sử có field store slug để làm đối với trường hợp gọi API qua Admin Nexbus. Ví dụ đối với dam-sen là: ve-vao-cua", position: "sidebar" },
+    }
   ],
 };

@@ -1,8 +1,8 @@
 ---
-import { getTickets, getSiteSettings } from "../lib/payload";
+import { getSiteSettings, getProducts, getDiscount } from "../lib/payload";
 import type { Tenant } from "../lib/payload";
 import Layout from "../components/Layout.astro";
-import TicketCard from "../components/TicketCard";
+import ProductShop from "../components/ProductShop";
 
 const tenant = Astro.locals.tenant as Tenant | null;
 
@@ -10,11 +10,11 @@ if (!tenant) {
   return new Response("Tenant not found", { status: 404 });
 }
 
-const [tickets, settings] = await Promise.all([
-  getTickets(tenant.id),
+const [settings, products, discounts] = await Promise.all([
   getSiteSettings(tenant.id),
+  getProducts(tenant.slug, tenant.storeSlug),
+  getDiscount(tenant.slug, tenant.storeSlug),
 ]);
-console.log("Tickets::::::", tickets);
 
 const primaryColor = settings?.theme?.primaryColor ?? "#3b82f6";
 const heroBgFrom = settings?.theme?.heroBgFrom ?? "#1e3a5f";
@@ -33,27 +33,12 @@ const heroBgTo = settings?.theme?.heroBgTo ?? "#3b82f6";
   </section>
 
   <section class="tickets-section container">
-    {
-      tickets.length === 0 ? (
-        <div class="empty-state">
-          <div class="empty-icon">🎟️</div>
-          <p>Chưa có vé nào đang mở bán.</p>
-          <a href="/" class="btn-primary" style={`background: ${primaryColor}`}>
-            Về trang chủ
-          </a>
-        </div>
-      ) : (
-        <div class="ticket-grid">
-          {tickets.map((ticket) => (
-            <TicketCard
-              client:visible
-              ticket={ticket}
-              primaryColor={primaryColor}
-            />
-          ))}
-        </div>
-      )
-    }
+    <ProductShop
+      client:load
+      products={products}
+      discounts={discounts}
+      primaryColor={primaryColor}
+    />
   </section>
 </Layout>
 
