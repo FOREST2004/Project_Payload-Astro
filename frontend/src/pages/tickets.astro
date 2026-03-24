@@ -1,5 +1,5 @@
 ---
-import { getSiteSettings, getProducts, getDiscount } from "../lib/payload";
+import { getSiteSettings, getProducts, getVouchers } from "../lib/payload";
 import type { Tenant } from "../lib/payload";
 import Layout from "../components/Layout.astro";
 import ProductShop from "../components/ProductShop";
@@ -10,10 +10,10 @@ if (!tenant) {
   return new Response("Tenant not found", { status: 404 });
 }
 
-const [settings, products, discounts] = await Promise.all([
+const [settings, products, vouchers] = await Promise.all([
   getSiteSettings(tenant.id),
   getProducts(tenant.slug, tenant.storeSlug),
-  getDiscount(tenant.slug, tenant.storeSlug),
+  getVouchers(tenant.slug, tenant.storeSlug),
 ]);
 
 const primaryColor = settings?.theme?.primaryColor ?? "#3b82f6";
@@ -36,8 +36,10 @@ const heroBgTo = settings?.theme?.heroBgTo ?? "#3b82f6";
     <ProductShop
       client:load
       products={products}
-      discounts={discounts}
+      vouchers={vouchers}
       primaryColor={primaryColor}
+      merchantSlug={tenant.slug}
+      storeSlug={tenant.storeSlug}
     />
   </section>
 </Layout>

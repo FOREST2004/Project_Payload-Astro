@@ -77,6 +77,232 @@
   color: var(--primary);
 }
 
+.voucherGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.75rem;
+}
+.voucherCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  border: 2px solid #eef0f3;
+  border-radius: 10px;
+  padding: 0.875rem 1rem;
+  gap: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.voucherCard:hover {
+  border-color: #d1d5db;
+}
+.voucherCardSelected {
+  border-color: var(--primary);
+  background: #fafafa;
+}
+.voucherCardLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+.voucherCardRadio {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s;
+}
+.voucherCardSelected .voucherCardRadio {
+  border-color: var(--primary);
+}
+.voucherCardRadioDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+.voucherCardCode {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: 0.03em;
+}
+.voucherCardExpiry {
+  display: block;
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 0.15rem;
+}
+.voucherCardBadge {
+  flex-shrink: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, white);
+  padding: 0.25rem 0.65rem;
+  border-radius: 8px;
+}
+
+.orderForm {
+  margin-top: 2rem;
+  background: white;
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  border: 1px solid #eef0f3;
+}
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.fullWidth {
+  grid-column: 1 / -1;
+}
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #444;
+}
+.input {
+  padding: 0.65rem 0.875rem;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.phoneWrap {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.phoneWrap:focus-within {
+  border-color: var(--primary, #3b82f6);
+}
+.phonePrefix {
+  padding: 0.65rem 0.75rem;
+  background: #f5f5f5;
+  font-size: 0.95rem;
+  color: #555;
+  border-right: 1.5px solid #e0e0e0;
+  white-space: nowrap;
+}
+.phoneInput {
+  flex: 1;
+  padding: 0.65rem 0.875rem;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: var(--primary, #3b82f6);
+}
+.submitBtn {
+  width: 100%;
+  padding: 0.875rem;
+  background: var(--primary, #3b82f6);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.submitBtn:hover {
+  opacity: 0.88;
+}
+.submitBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.recaptchaWrap {
+  margin-bottom: 1.25rem;
+}
+.errorMsg {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+.successBox {
+  margin-top: 1.5rem;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+  color: #166534;
+  font-weight: 600;
+}
+.orderCode {
+  margin-top: 0.4rem;
+  font-size: 1rem;
+}
+
+.continueBar {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+}
+.continueBtn {
+  padding: 0.875rem 2.5rem;
+  background: var(--primary, #3b82f6);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.continueBtn:hover {
+  opacity: 0.88;
+}
+.continueBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+.backBtn:hover {
+  color: #111;
+}
+
 .empty {
   text-align: center;
   padding: 5rem 1rem;
